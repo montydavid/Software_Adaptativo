@@ -3,8 +3,8 @@ import Layout from "../layouts/Layout.astro";
 ---
 
 <Layout>
-  <body class="bg-gray-50 font-poppins">
-    <div class="container mx-auto px-4 py-6">
+  <body class="font-poppins min-h-screen bg-cover bg-center" style="background-image: url('./images/main.jpg');">
+    <div class="container mx-auto px-4 py-6  ">
       <!-- Header con navbar y perfil -->
       <div class="bg-white rounded-xl shadow-md mb-8 p-4">
         <div class="flex justify-between items-center">
@@ -129,13 +129,13 @@ import Layout from "../layouts/Layout.astro";
 
         <!-- Gastos -->
         <div
-          class="bg-gradient-to-br from-pink-500 to-pink-700 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 p-6 text-white cursor-pointer transform hover:-translate-y-1 transition-transform duration-300"
+          class="bg-gradient-to-br from-pink-500 to-pink-700 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 p-6 text-white cursor-pointer transform hover:-translate-y-1"
         >
           <div class="flex flex-col items-center justify-center h-32">
             <div class="bg-pink-600 p-3 rounded-xl mb-3 shadow-md">
               <i class="fas fa-receipt text-2xl"></i>
             </div>
-            <h3 class="font-semibold text-center text-lg">Gastos</h3>
+            <a href="/gastos"><h3 class="font-semibold text-center text-lg">Gastos</h3></a>
             <p class="text-xs opacity-80 text-center mt-1">
               Registro de gastos
             </p>
