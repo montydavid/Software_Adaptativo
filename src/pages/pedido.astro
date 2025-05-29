@@ -1,0 +1,771 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout>
+  <div class="w-full mx-auto">
+    <!-- Header con navbar y perfil -->
+    <div class="bg-white rounded-xl shadow-md mb-8 p-4">
+      <div class="flex justify-between items-center">
+        <div class="flex items-center">
+          <img
+            class="w-20 h-20 rounded-xl"
+            src="images/iconoRestaurante.png"
+            alt=""
+          />
+          <div>
+            <h1 class="text-2xl font-bold text-gray-800">FastFood Dashboard</h1>
+            <p class="text-sm text-gray-500">
+              Sistema de Gestión de Restaurante
+            </p>
+          </div>
+        </div>
+
+        <div class="flex items-center">
+          <div class="mr-4 text-right">
+            <p class="text-sm text-gray-600">Bienvenido,</p>
+            <p class="font-bold text-gray-800">Administrador</p>
+          </div>
+          <div class="relative">
+            <div
+              class="w-10 h-10 bg-blue-200 rounded-full flex items-center justify-center text-blue-600 font-bold"
+            >
+              A
+            </div>
+            <span
+              class="absolute top-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"
+            ></span>
+          </div>
+          <a href="/">
+            <button
+              class="ml-4 px-4 py-2 bg-[#1680aa] text-white rounded-lg hover:bg-[#181f20] transition-colors duration-300 flex items-center"
+            >
+              <i class="fas fa-sign-out-alt mr-2"></i> Cerrar Sesión
+            </button>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Vista principal (mesas) -->
+    <div id="tableView" class="block">
+      <div class="bg-gray-100 min-h-screen">
+        <!-- Pestañas -->
+        <div class="bg-gradient-to-r from-blue-900 to-blue-700 shadow-md">
+          <div class="container mx-auto flex flex-wrap">
+            <button
+              id="btnPrimerPiso"
+              class="py-3 px-6 font-semibold text-white bg-red-600 hover:bg-red-700 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
+            >
+              PRIMER PISO
+            </button>
+            <button
+              id="btnSegundoPiso"
+              class="py-3 px-6 font-semibold text-white hover:bg-blue-600 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+            >
+              SEGUNDO PISO
+            </button>
+            <button
+              id="btnPasillo"
+              class="py-3 px-6 font-semibold text-white hover:bg-blue-600 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+            >
+              PASILLO
+            </button>
+            <button
+              id="btnDomicilios"
+              class="py-3 px-6 font-semibold text-white hover:bg-blue-600 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+            >
+              DOMICILIOS
+            </button>
+            <button
+              id="btnF"
+              class="py-3 px-6 font-semibold text-white hover:bg-blue-600 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+            >
+              BARRA
+            </button>
+          </div>
+        </div>
+
+        <div class="container mx-auto py-6 px-4">
+          <h1 class="text-2xl font-bold text-gray-800 mb-6">
+            Gestión de Mesas
+          </h1>
+          <div
+            id="mesasContainer"
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6"
+          >
+          </div>
+        </div>
+
+        <!-- Paginación -->
+        <div class="mt-8 flex items-center justify-between p-2">
+          <div class="flex space-x-2">
+            <button
+              class="bg-gray-800 hover:bg-gray-700 text-white rounded-md px-4 py-2 flex items-center transition-colors"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                  clip-rule="evenodd"></path>
+              </svg>
+              <span class="ml-1">Anterior</span>
+            </button>
+            <button
+              class="bg-gray-800 hover:bg-gray-700 text-white rounded-md px-4 py-2 flex items-center transition-colors"
+            >
+              <span class="mr-1">Siguiente</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                  clip-rule="evenodd"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="text-gray-700 font-medium">
+            Página 1 de 1 | 5 Registros
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Vista de pedido (inicialmente oculta) -->
+  <div id="orderView" class="hidden">
+    <div class="bg-gray-100 min-h-screen">
+      <div class="container mx-auto py-6 px-4">
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+          <div
+            class="bg-gradient-to-r from-blue-800 to-blue-600 flex justify-between items-center px-6 py-4"
+          >
+            <h2 class="text-2xl font-bold text-white flex items-center">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-8 w-8 mr-3 text-yellow-300"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"
+                ></path>
+              </svg>
+              PEDIDO MESA 1
+            </h2>
+            <button
+              id="closeOrderBtn"
+              class="text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded-md font-medium flex items-center transition-colors"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5 mr-1"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                  clip-rule="evenodd"></path>
+              </svg>
+              Cerrar
+            </button>
+          </div>
+
+          <div class="p-6">
+            <!-- Encabezado del pedido -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              <div class="flex flex-col">
+                <label class="text-gray-700 font-medium mb-2 flex items-center">
+                  <span class="text-blue-500 mr-2">■</span>
+                  Trasladar A
+                </label>
+                <select
+                  class="bg-white border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                >
+                </select>
+              </div>
+
+              <div class="flex flex-col">
+                <label class="text-gray-700 font-medium mb-2 flex items-center">
+                  <span class="text-blue-500 mr-2">■</span>
+                  Mesero
+                </label>
+                <select
+                  class="bg-white border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                >
+                  <option>Seleccione una Opción</option>
+                  <option>Juan Pérez</option>
+                  <option>María Gómez</option>
+                  <option>Carlos Rodríguez</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Resto del código de la vista de pedido (tabla de productos, formulario, etc.) -->
+            <!-- Tabla de productos -->
+            <div
+              class="bg-white border border-gray-200 rounded-lg overflow-hidden mb-8"
+            >
+              <div class="overflow-x-auto">
+                <table class="w-full">
+                  <thead>
+                    <tr class="bg-gray-100">
+                      <th
+                        class="text-left py-3 px-4 font-semibold text-gray-700"
+                        >Código</th
+                      >
+                      <th
+                        class="text-left py-3 px-4 font-semibold text-gray-700"
+                        >Producto</th
+                      >
+                      <th
+                        class="text-left py-3 px-4 font-semibold text-gray-700"
+                        >Detalle</th
+                      >
+                      <th
+                        class="text-left py-3 px-4 font-semibold text-gray-700"
+                        >Cantidad</th
+                      >
+                      <th
+                        class="text-left py-3 px-4 font-semibold text-gray-700"
+                        >Valor</th
+                      >
+                      <th
+                        class="text-left py-3 px-4 font-semibold text-gray-700"
+                        >Total</th
+                      >
+                      <th
+                        class="text-left py-3 px-4 font-semibold text-gray-700"
+                        >Funciones</th
+                      >
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- Filas de productos irían aquí -->
+                    <tr class="border-t border-gray-200">
+                      <td class="py-4 px-4 text-gray-500" colspan="7"
+                        >No hay productos agregados</td
+                      >
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Formulario de producto y acciones -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              <!-- Sección de producto -->
+              <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">
+                  Agregar Producto
+                </h3>
+                <div class="space-y-4">
+                  <div>
+                    <label
+                      class="text-gray-700 font-medium mb-2 flex items-center"
+                    >
+                      <span class="text-yellow-500 mr-2">■</span>
+                      Cantidad
+                    </label>
+                    <div class="flex items-center space-x-2">
+                      <input
+                        type="text"
+                        class="bg-white border border-gray-300 rounded-md px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="0"
+                      />
+                      <input
+                        type="text"
+                        class="bg-white border border-gray-300 rounded-md px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="Unidad"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label
+                      class="text-gray-700 font-medium mb-2 flex items-center"
+                    >
+                      <span class="text-yellow-500 mr-2">■</span>
+                      Total
+                    </label>
+                    <input
+                      type="text"
+                      class="bg-white border border-gray-300 rounded-md px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="$0.00"
+                    />
+                  </div>
+
+                  <div class="flex space-x-2 pt-2">
+                    <button
+                      class="bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-4 rounded-md font-medium flex items-center justify-center transition-colors flex-1"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="h-5 w-5 mr-1"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3z"
+                        ></path>
+                      </svg>
+                      COCINA
+                    </button>
+                    <button
+                      class="bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-4 rounded-md font-medium flex items-center justify-center transition-colors flex-1"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="h-5 w-5 mr-1"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          d="M5 5a3 3 0 015-2.236A3 3 0 0114.83 6H16a2 2 0 110 4h-5V9a1 1 0 10-2 0v1H4a2 2 0 110-4h1.17C5.06 5.687 5 5.35 5 5zm4 1V5a1 1 0 10-1 1h1zm3 0a1 1 0 10-1-1v1h1z"
+                          clip-rule="evenodd"></path>
+                      </svg>
+                      BAR
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Sección de detalle del pedido -->
+              <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">
+                  Detalle del Pedido
+                </h3>
+                <div class="space-y-4">
+                  <textarea
+                    class="bg-white border border-gray-300 rounded-md px-3 py-2 w-full h-48 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Añadir detalles, observaciones o solicitudes especiales del cliente..."
+                  ></textarea>
+                  <button
+                    class="bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-4 rounded-md font-medium flex items-center justify-center transition-colors w-full"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-5 w-5 mr-1"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        d="M7.707 10.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V6h1a2 2 0 012 2v7a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h1v5.586l-1.293-1.293z"
+                      ></path>
+                    </svg>
+                    GUARDAR DETALLE
+                  </button>
+                </div>
+              </div>
+
+              <!-- Sección de total y facturación -->
+              <div class="bg-white p-6 rounded-lg shadow-md">
+                <div class="flex flex-col h-full">
+                  <div class="mb-6">
+                    <h3
+                      class="text-lg font-semibold text-gray-800 mb-2 text-center"
+                    >
+                      TOTAL
+                    </h3>
+                    <div
+                      class="bg-gray-100 text-gray-900 text-4xl text-right p-4 rounded-md font-bold border-2 border-blue-600"
+                    >
+                      $0.00
+                    </div>
+                  </div>
+
+                  <div class="space-y-4 mt-auto">
+                    <div>
+                      <label
+                        class="text-gray-700 font-medium mb-2 flex items-center"
+                      >
+                        <span class="text-yellow-500 mr-2">■</span>
+                        Cliente
+                      </label>
+                      <div class="flex">
+                        <input
+                          type="text"
+                          class="bg-white border border-gray-300 rounded-l-md px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          placeholder="Buscar cliente..."
+                        />
+                        <button
+                          class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-r-md transition-colors"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="h-5 w-5"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                          >
+                            <path
+                              fill-rule="evenodd"
+                              d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                              clip-rule="evenodd"></path>
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label
+                        class="text-gray-700 font-medium mb-2 flex items-center"
+                      >
+                        <span class="text-yellow-500 mr-2">■</span>
+                        Nombre
+                      </label>
+                      <input
+                        type="text"
+                        class="bg-white border border-gray-300 rounded-md px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="Nombre del cliente"
+                      />
+                    </div>
+
+                    <div class="flex justify-between items-center pt-2">
+                      <div class="flex items-center">
+                        <label
+                          class="text-gray-700 font-medium flex items-center whitespace-nowrap"
+                        >
+                          <span class="text-yellow-500 mr-2">■</span>
+                          Descuento %
+                        </label>
+                        <input
+                          type="text"
+                          class="bg-white border border-gray-300 rounded-md px-3 py-2 w-16 ml-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          placeholder="0"
+                        />
+                      </div>
+
+                      <button
+                        class="bg-green-600 hover:bg-green-700 text-white py-2 px-6 rounded-full font-medium flex items-center justify-center transition-colors"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-5 w-5 mr-1"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                        >
+                          <path
+                            fill-rule="evenodd"
+                            d="M5 2a2 2 0 00-2 2v14l3.5-2 3.5 2 3.5-2 3.5 2V4a2 2 0 00-2-2H5zm4.707 3.707a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L8.414 9H10a3 3 0 013 3v1a1 1 0 102 0v-1a5 5 0 00-5-5H8.414l1.293-1.293z"
+                            clip-rule="evenodd"></path>
+                        </svg>
+                        FACTURAR
+                      </button>
+                    </div>
+
+                    <div>
+                      <label
+                        class="text-gray-700 font-medium mb-2 flex items-center"
+                      >
+                        <span class="text-yellow-500 mr-2">■</span>
+                        Valor Descuento
+                      </label>
+                      <input
+                        type="text"
+                        class="bg-white border border-gray-300 rounded-md px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="$0.00"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- ... -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<!-- Mantén todo el código anterior igual hasta el script -->
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const mesas = {
+      primerPiso: [1, 2, 3, 4, 5],
+      segundoPiso: [6, 7, 8, 9, 10, 11, 12, 13],
+      pasillo: [14, 15, 16, 17, 18, 19, 20],
+      domicilios: Array.from({ length: 20 }, (_, i) => i + 1),
+      barra: ["BARRA"],
+    };
+
+    const container = document.getElementById("mesasContainer");
+    const tableView = document.getElementById("tableView");
+    const orderView = document.getElementById("orderView");
+    const closeOrderBtn = document.getElementById("closeOrderBtn");
+    const trasladarSelect = document.querySelector("#orderView select"); // Select para trasladar
+
+    // Objeto para almacenar el estado de las mesas
+    const mesasState = {};
+
+    // Función para formatear fecha
+    function formatDate(date) {
+      return date.toLocaleString("es-ES", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    }
+
+    // Función para calcular tiempo transcurrido
+    function calculateElapsedTime(startTime) {
+      const now = new Date();
+      const diff = now - startTime;
+
+      const hours = Math.floor(diff / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+
+      return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
+    }
+
+    // Función para cambiar entre vistas
+    function showTableView() {
+      tableView.classList.remove("hidden");
+      orderView.classList.add("hidden");
+    }
+
+    function showOrderView(mesaId) {
+      tableView.classList.add("hidden");
+      orderView.classList.remove("hidden");
+
+      // Actualizar el título del pedido
+      const pedidoTitle = orderView.querySelector("h2");
+      if (pedidoTitle) {
+        pedidoTitle.textContent = `PEDIDO ${mesaId}`;
+      }
+
+      // Actualizar opciones de "Trasladar a"
+      updateTrasladarOptions(mesaId);
+    }
+
+    // Función para actualizar las opciones de trasladar
+    function updateTrasladarOptions(currentMesaId) {
+      // Limpiar opciones actuales
+      trasladarSelect.innerHTML =
+        '<option value="">Seleccione una mesa</option>';
+
+      // Obtener todas las mesas disponibles (excepto la actual)
+      const disponibles = [];
+
+      // Revisar todas las áreas
+      Object.keys(mesas).forEach((area) => {
+        mesas[area].forEach((numMesa) => {
+          const mesaId =
+            area === "barra"
+              ? "BARRA"
+              : area === "domicilios"
+                ? `DOMICILIO ${numMesa}`
+                : `MESA ${numMesa}`;
+
+          // Solo agregar si no es la mesa actual y está disponible
+          if (
+            mesaId !== currentMesaId &&
+            (!mesasState[mesaId] || mesasState[mesaId].estado !== "ocupada")
+          ) {
+            disponibles.push(mesaId);
+          }
+        });
+      });
+
+      // Ordenar mesas numéricamente
+      disponibles.sort((a, b) => {
+        const numA = parseInt(a.replace(/\D/g, "")) || 0;
+        const numB = parseInt(b.replace(/\D/g, "")) || 0;
+        return numA - numB;
+      });
+
+      // Agregar opciones al select
+      disponibles.forEach((mesa) => {
+        const option = document.createElement("option");
+        option.value = mesa;
+        option.textContent = mesa;
+        trasladarSelect.appendChild(option);
+      });
+
+      // Agregar evento para trasladar
+      trasladarSelect.addEventListener("change", function () {
+        if (this.value) {
+          if (confirm(`¿Desea trasladar los productos a ${this.value}?`)) {
+            // Aquí iría la lógica para trasladar los productos
+            alert(`Productos trasladados a ${this.value}`);
+            this.value = ""; // Resetear el select
+          }
+        }
+      });
+    }
+
+    // Función para actualizar el estado de una mesa
+    function updateMesaState(mesaId, estado) {
+      if (estado === "ocupada") {
+        mesasState[mesaId] = {
+          estado: "ocupada",
+          fechaApertura: new Date(),
+          startTime: new Date(),
+        };
+      } else {
+        delete mesasState[mesaId];
+      }
+    }
+
+    // Función para renderizar mesas
+    function renderMesas(mesasArray, tipo) {
+      container.innerHTML = "";
+
+      const fragment = document.createDocumentFragment();
+
+      mesasArray.forEach((numMesa) => {
+        const esBarra = tipo === "barra";
+        const esDomicilio = tipo === "domicilios";
+
+        const mesaId = esBarra
+          ? "BARRA"
+          : esDomicilio
+            ? `DOMICILIO ${numMesa}`
+            : `MESA ${numMesa}`;
+
+        const mesaData = mesasState[mesaId];
+        const isOcupada = mesaData && mesaData.estado === "ocupada";
+
+        // Determinar colores según estado
+        const estadoColor = isOcupada ? "bg-red-500" : "bg-green-500";
+        const cardColor = isOcupada ? "bg-red-50" : "bg-white";
+
+        const mesaDiv = document.createElement("div");
+        mesaDiv.className = `${cardColor} rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow`;
+
+        mesaDiv.innerHTML = `
+          <div class="${estadoColor} py-2">
+            <div class="text-center font-bold text-white">${isOcupada ? "OCUPADO" : "DISPONIBLE"}</div>
+          </div>
+          <div class="text-center font-bold text-xl py-2 ${isOcupada ? "bg-red-100" : "bg-green-100"}">${mesaId}</div>
+          <div class="p-4 space-y-3">
+            <div class="flex justify-between items-center border-b pb-2">
+              <div class="text-sm font-medium text-gray-600">Hora:</div>
+              <div class="text-sm text-gray-800">${isOcupada ? formatDate(mesaData.fechaApertura).split(",")[1].trim() : "-"}</div>
+            </div>
+            <div class="flex justify-between items-center border-b pb-2">
+              <div class="text-sm font-medium text-gray-600">Tiempo:</div>
+              <div class="text-sm text-gray-800">${isOcupada ? calculateElapsedTime(mesaData.startTime) : "-"}</div>
+            </div>
+            <div class="flex justify-between items-center border-b pb-2">
+              <div class="text-sm font-medium text-gray-600">Fecha:</div>
+              <div class="text-sm text-gray-800">${isOcupada ? formatDate(mesaData.fechaApertura).split(",")[0] : "-"}</div>
+            </div>
+            <div class="flex justify-between items-center border-b pb-2">
+              <div class="text-sm font-medium text-gray-600">Valor:</div>
+              <div class="text-sm text-gray-800">-</div>
+            </div>
+            <div class="flex justify-between items-center border-b pb-2">
+              <div class="text-sm font-medium text-gray-600">Detalle:</div>
+              <div class="text-sm text-gray-800">-</div>
+            </div>
+          </div>
+          <div class="px-4 pb-4">
+            <button class="open-mesa-btn ${isOcupada ? "bg-red-600 hover:bg-red-700" : "bg-blue-600 hover:bg-blue-700"} text-white py-2 px-2 w-full rounded-md text-center font-medium flex items-center justify-center transition-colors" data-mesa="${mesaId}">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"></path>
+              </svg>
+              ${isOcupada ? "VER PEDIDO" : esBarra ? "ABRIR BARRA" : esDomicilio ? "ABRIR DOMICILIO" : "ABRIR MESA"}
+            </button>
+          </div>
+        `;
+        fragment.appendChild(mesaDiv);
+      });
+
+      container.appendChild(fragment);
+    }
+
+    // Mostrar mesas del primer piso por defecto
+    renderMesas(mesas.primerPiso, "primerPiso");
+
+    // Manejar clic en cualquier botón de abrir mesa/domicilio/barra
+    container.addEventListener("click", (e) => {
+      if (e.target.closest(".open-mesa-btn")) {
+        const mesaId = e.target.closest(".open-mesa-btn").dataset.mesa;
+
+        // Si la mesa no está ocupada, marcarla como ocupada
+        if (!mesasState[mesaId] || mesasState[mesaId].estado !== "ocupada") {
+          updateMesaState(mesaId, "ocupada");
+
+          // Volver a renderizar las mesas para actualizar el estado
+          const activeTab = document.querySelector(".bg-red-600");
+          if (activeTab) {
+            const tabId = activeTab.id;
+            const tipo = Object.keys(tabs).find((key) => key === tabId);
+            renderMesas(tabs[tabId].mesas, tabs[tabId].tipo);
+          }
+        }
+
+        showOrderView(mesaId);
+      }
+    });
+
+    // Manejar clic en el botón de cerrar pedido
+    if (closeOrderBtn) {
+      closeOrderBtn.addEventListener("click", showTableView);
+    }
+
+    // Configuración de pestañas
+    const tabs = {
+      btnPrimerPiso: { mesas: mesas.primerPiso, tipo: "primerPiso" },
+      btnSegundoPiso: { mesas: mesas.segundoPiso, tipo: "segundoPiso" },
+      btnPasillo: { mesas: mesas.pasillo, tipo: "pasillo" },
+      btnDomicilios: { mesas: mesas.domicilios, tipo: "domicilios" },
+      btnF: { mesas: mesas.barra, tipo: "barra" },
+    };
+
+    // Configurar eventos de pestañas
+    Object.keys(tabs).forEach((tabId) => {
+      const tab = document.getElementById(tabId);
+      if (tab) {
+        tab.addEventListener("click", () => {
+          // Quitar la clase activa de todas las pestañas
+          Object.keys(tabs).forEach((id) => {
+            const element = document.getElementById(id);
+            if (element) {
+              element.classList.remove("bg-red-600", "hover:bg-red-700");
+              element.classList.add("hover:bg-blue-600");
+            }
+          });
+
+          // Agregar la clase activa a la pestaña seleccionada
+          tab.classList.add("bg-red-600", "hover:bg-red-700");
+          tab.classList.remove("hover:bg-blue-600");
+
+          // Mostrar las mesas correspondientes
+          renderMesas(tabs[tabId].mesas, tabs[tabId].tipo);
+        });
+      }
+    });
+
+    // Activar la primera pestaña por defecto
+    const primerPisoTab = document.getElementById("btnPrimerPiso");
+    if (primerPisoTab) {
+      primerPisoTab.classList.add("bg-red-600", "hover:bg-red-700");
+      primerPisoTab.classList.remove("hover:bg-blue-600");
+    }
+
+    // Actualizar tiempos cada minuto
+    setInterval(() => {
+      const activeTab = document.querySelector(".bg-red-600");
+      if (activeTab) {
+        const tabId = activeTab.id;
+        const tipo = Object.keys(tabs).find((key) => key === tabId);
+        renderMesas(tabs[tabId].mesas, tabs[tabId].tipo);
+      }
+    }, 60000); // Actualizar cada minuto
+  });
+</script>
