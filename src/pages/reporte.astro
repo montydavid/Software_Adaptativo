@@ -1,0 +1,536 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout>
+  <body class="bg-gray-50 min-h-screen">
+    <div class="max-w-7xl mx-auto p-6">
+      <!-- Header -->
+      <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">
+          Reportes del sistema
+        </h1>
+        <p class="text-gray-600">Gestión de reportes diarios del restaurante</p>
+      </div>
+
+      <!-- Filtros -->
+      <div class="bg-white rounded-lg shadow-sm border p-6 mb-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">Filtros</h2>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2"
+              >Fecha</label
+            >
+            <input
+              type="date"
+              id="dateFilter"
+              class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2"
+              >Empleado</label
+            >
+            <select
+              id="staffFilter"
+              class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">Todos los empleados</option>
+              <option value="EMP001">María García</option>
+              <option value="EMP002">Juan Pérez</option>
+              <option value="EMP003">Ana López</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2"
+              >Método de Pago</label
+            >
+            <select
+              id="paymentFilter"
+              class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">Todos los métodos</option>
+              <option value="CASH">Efectivo</option>
+              <option value="CARD">Tarjeta</option>
+              <option value="TRANSFER">Transferencia</option>
+            </select>
+          </div>
+          <div class="flex items-end">
+            <button
+              onclick="applyFilters()"
+              class="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
+            >
+              Aplicar Filtros
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Métricas -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+        <div class="bg-white p-6 rounded-lg shadow-sm border">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-600">Ventas Totales</p>
+              <p class="text-2xl font-bold text-gray-900" id="totalSales">
+                $1254000
+              </p>
+            </div>
+            <div class="bg-green-100 p-3 rounded-full">
+              <svg
+                class="w-6 h-6 text-green-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"
+                ></path>
+              </svg>
+            </div>
+          </div>
+          <p class="text-xs text-green-600 mt-2">+8.2% vs ayer</p>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-sm border">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-600">Órdenes</p>
+              <p class="text-2xl font-bold text-gray-900" id="totalOrders">
+                342
+              </p>
+            </div>
+            <div class="bg-blue-100 p-3 rounded-full">
+              <svg
+                class="w-6 h-6 text-blue-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                ></path>
+              </svg>
+            </div>
+          </div>
+          <p class="text-xs text-blue-600 mt-2">+12 vs ayer</p>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-sm border">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-600">Descuentos</p>
+              <p class="text-2xl font-bold text-gray-900" id="totalDiscounts">
+                $0
+              </p>
+            </div>
+            <div class="bg-red-100 p-3 rounded-full">
+              <svg
+                class="w-6 h-6 text-red-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+                ></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gráfico y Métodos de Pago -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+        <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-sm border">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">
+            Ventas por Hora
+          </h3>
+          <canvas id="salesChart" height="100"></canvas>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-sm border">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">
+            Métodos de Pago
+          </h3>
+          <div class="space-y-4">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center">
+                <div class="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
+                <span class="text-sm font-medium text-gray-700">Efectivo</span>
+              </div>
+              <span class="text-sm font-bold text-gray-900">45%</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center">
+                <div class="w-3 h-3 bg-blue-500 rounded-full mr-3"></div>
+                <span class="text-sm font-medium text-gray-700">Tarjeta</span>
+              </div>
+              <span class="text-sm font-bold text-gray-900">38%</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center">
+                <div class="w-3 h-3 bg-purple-500 rounded-full mr-3"></div>
+                <span class="text-sm font-medium text-gray-700"
+                  >Transferencia</span
+                >
+              </div>
+              <span class="text-sm font-bold text-gray-900">17%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabla de Órdenes -->
+      <div class="bg-white rounded-lg shadow-sm border">
+        <div class="px-6 py-4 border-b border-gray-200">
+          <div class="flex justify-between items-center">
+            <h3 class="text-lg font-semibold text-gray-900">Órdenes del Día</h3>
+            <div class="flex space-x-2">
+              <button
+                onclick="exportData()"
+                class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors text-sm"
+              >
+                Exportar Excel
+              </button>
+              <button
+                onclick="printReport()"
+                class="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition-colors text-sm"
+              >
+                Imprimir
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >ID</th
+                >
+                <th
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >Hora</th
+                >
+                <th
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >Empleado</th
+                >
+                <th
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >Mesa</th
+                >
+                <th
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >Pago</th
+                >
+                <th
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >Descuento</th
+                >
+                <th
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >Total</th
+                >
+                <th
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >Acciones</th
+                >
+              </tr>
+            </thead>
+            <tbody id="ordersTable" class="bg-white divide-y divide-gray-200">
+              <!-- Datos se cargan dinámicamente -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Paginación -->
+        <div
+          class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6"
+        >
+          <div class="flex-1 flex justify-between sm:hidden">
+            <button
+              class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+            >
+              Anterior
+            </button>
+            <button
+              class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+            >
+              Siguiente
+            </button>
+          </div>
+          <div
+            class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between"
+          >
+            <div>
+              <p class="text-sm text-gray-700">
+                Mostrando <span class="font-medium">1</span> a <span
+                  class="font-medium">10</span
+                > de <span class="font-medium">342</span> resultados
+              </p>
+            </div>
+            <div>
+              <nav
+                class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px"
+              >
+                <button
+                  class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+                >
+                  <span class="sr-only">Anterior</span>
+                  <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path
+                      fill-rule="evenodd"
+                      d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                      clip-rule="evenodd"></path>
+                  </svg>
+                </button>
+                <button
+                  class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
+                  >1</button
+                >
+                <button
+                  class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-blue-50 text-sm font-medium text-blue-600"
+                  >2</button
+                >
+                <button
+                  class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
+                  >3</button
+                >
+                <button
+                  class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+                >
+                  <span class="sr-only">Siguiente</span>
+                  <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path
+                      fill-rule="evenodd"
+                      d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                      clip-rule="evenodd"></path>
+                  </svg>
+                </button>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Datos de ejemplo
+      const sampleOrders = [
+        {
+          id: 1001,
+          date: "2025-05-28",
+          time: "08:30",
+          discount: 0,
+          total: 25.5,
+          made_by: "María García",
+          staff_id: "EMP001",
+          customer_phone: "3001234567",
+          table_name: "Mesa 1",
+          method_payment_id: "CASH",
+        },
+        {
+          id: 1002,
+          date: "2025-05-28",
+          time: "09:15",
+          discount: 2.5,
+          total: 32.0,
+          made_by: "Juan Pérez",
+          staff_id: "EMP002",
+          customer_phone: "3007654321",
+          table_name: "Mesa 3",
+          method_payment_id: "CARD",
+        },
+        {
+          id: 1003,
+          date: "2025-05-28",
+          time: "10:45",
+          discount: 0,
+          total: 18.75,
+          made_by: "Ana López",
+          staff_id: "EMP003",
+          customer_phone: null,
+          table_name: "Domicilio",
+          method_payment_id: "TRANSFER",
+        },
+        {
+          id: 1004,
+          date: "2025-05-28",
+          time: "11:20",
+          discount: 5.0,
+          total: 45.0,
+          made_by: "María García",
+          staff_id: "EMP001",
+          customer_phone: "3009876543",
+          table_name: "Mesa 5",
+          method_payment_id: "CASH",
+        },
+        {
+          id: 1005,
+          date: "2025-05-28",
+          time: "12:10",
+          discount: 0,
+          total: 28.9,
+          made_by: "Juan Pérez",
+          staff_id: "EMP002",
+          customer_phone: null,
+          table_name: "Para llevar",
+          method_payment_id: "CARD",
+        },
+      ];
+
+      // Inicializar fecha actual
+      document.getElementById("dateFilter").value = new Date()
+        .toISOString()
+        .split("T")[0];
+
+      // Cargar datos de la tabla
+      function loadOrdersTable() {
+        const tbody = document.getElementById("ordersTable");
+        tbody.innerHTML = "";
+
+        sampleOrders.forEach((order) => {
+          const row = document.createElement("tr");
+          row.className = "hover:bg-gray-50";
+
+          row.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${order.id}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${order.time}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${order.made_by}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${order.table_name}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getPaymentBadgeClass(order.method_payment_id)}">
+                            ${getPaymentMethodName(order.method_payment_id)}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$${order.discount.toFixed(2)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">$${order.total.toFixed(2)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <button onclick="viewOrder(${order.id})" class="text-blue-600 hover:text-blue-900 mr-3">Ver</button>
+                        <button onclick="editOrder(${order.id})" class="text-indigo-600 hover:text-indigo-900">Editar</button>
+                    </td>
+                `;
+
+          tbody.appendChild(row);
+        });
+      }
+
+      function getPaymentMethodName(id) {
+        const methods = {
+          CASH: "Efectivo",
+          CARD: "Tarjeta",
+          TRANSFER: "Transferencia",
+        };
+        return methods[id] || id;
+      }
+
+      function getPaymentBadgeClass(id) {
+        const classes = {
+          CASH: "bg-green-100 text-green-800",
+          CARD: "bg-blue-100 text-blue-800",
+          TRANSFER: "bg-purple-100 text-purple-800",
+        };
+        return classes[id] || "bg-gray-100 text-gray-800";
+      }
+
+      // Inicializar gráfico
+      function initChart() {
+        const ctx = document.getElementById("salesChart").getContext("2d");
+        new Chart(ctx, {
+          type: "line",
+          data: {
+            labels: [
+              "08:00",
+              "09:00",
+              "10:00",
+              "11:00",
+              "12:00",
+              "13:00",
+              "14:00",
+              "15:00",
+              "16:00",
+              "17:00",
+              "18:00",
+              "19:00",
+            ],
+            datasets: [
+              {
+                label: "Ventas ($)",
+                data: [
+                  450, 680, 920, 1200, 1800, 2100, 1900, 1600, 1400, 1100, 800,
+                  650,
+                ],
+                borderColor: "rgb(59, 130, 246)",
+                backgroundColor: "rgba(59, 130, 246, 0.1)",
+                tension: 0.4,
+                fill: true,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: {
+                beginAtZero: true,
+                ticks: {
+                  callback: function (value) {
+                    return "$" + value;
+                  },
+                },
+              },
+            },
+            plugins: {
+              legend: {
+                display: false,
+              },
+            },
+          },
+        });
+      }
+
+      // Funciones de la interfaz
+      function applyFilters() {
+        console.log("Aplicando filtros...");
+        // Aquí iría la lógica para filtrar los datos
+        loadOrdersTable();
+      }
+
+      function viewOrder(id) {
+        alert(`Ver detalles de la orden ${id}`);
+      }
+
+      function editOrder(id) {
+        alert(`Editar orden ${id}`);
+      }
+
+      function exportData() {
+        alert("Exportando datos a Excel...");
+        // Aquí iría la lógica para exportar
+      }
+
+      function printReport() {
+        window.print();
+      }
+
+      // Inicializar la aplicación
+      document.addEventListener("DOMContentLoaded", function () {
+        loadOrdersTable();
+        initChart();
+      });
+    </script>
+  </body>
+</Layout>
