@@ -29,31 +29,14 @@ import Layout from "../layouts/Layout.astro";
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-2"
-              >Empleado</label
+              >Rango de Monto</label
             >
-            <select
-              id="staffFilter"
+            <input
+              type="number"
+              id="minAmount"
+              placeholder="Monto mínimo"
               class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="">Todos los empleados</option>
-              <option value="EMP001">María García</option>
-              <option value="EMP002">Juan Pérez</option>
-              <option value="EMP003">Ana López</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2"
-              >Método de Pago</label
-            >
-            <select
-              id="paymentFilter"
-              class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="">Todos los métodos</option>
-              <option value="CASH">Efectivo</option>
-              <option value="CARD">Tarjeta</option>
-              <option value="TRANSFER">Transferencia</option>
-            </select>
+            />
           </div>
           <div class="flex items-end">
             <button
@@ -66,15 +49,37 @@ import Layout from "../layouts/Layout.astro";
         </div>
       </div>
 
+      <!-- Error/Success Messages -->
+      <div
+        id="errorMessage"
+        class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4"
+      >
+        <p id="errorText"></p>
+      </div>
+
+      <div
+        id="successMessage"
+        class="hidden bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4"
+      >
+        <p id="successText"></p>
+      </div>
+
+      <!-- Loading indicator -->
+      <div id="loadingIndicator" class="text-center py-8 hidden">
+        <div
+          class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"
+        >
+        </div>
+        <p class="mt-2 text-gray-600">Cargando datos...</p>
+      </div>
+
       <!-- Métricas -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
         <div class="bg-white p-6 rounded-lg shadow-sm border">
           <div class="flex items-center justify-between">
             <div>
               <p class="text-sm font-medium text-gray-600">Ventas Totales</p>
-              <p class="text-2xl font-bold text-gray-900" id="totalSales">
-                $1254000
-              </p>
+              <p class="text-2xl font-bold text-gray-900" id="totalSales">$0</p>
             </div>
             <div class="bg-green-100 p-3 rounded-full">
               <svg
@@ -92,16 +97,13 @@ import Layout from "../layouts/Layout.astro";
               </svg>
             </div>
           </div>
-          <p class="text-xs text-green-600 mt-2">+8.2% vs ayer</p>
         </div>
 
         <div class="bg-white p-6 rounded-lg shadow-sm border">
           <div class="flex items-center justify-between">
             <div>
               <p class="text-sm font-medium text-gray-600">Órdenes</p>
-              <p class="text-2xl font-bold text-gray-900" id="totalOrders">
-                342
-              </p>
+              <p class="text-2xl font-bold text-gray-900" id="totalOrders">0</p>
             </div>
             <div class="bg-blue-100 p-3 rounded-full">
               <svg
@@ -119,74 +121,6 @@ import Layout from "../layouts/Layout.astro";
               </svg>
             </div>
           </div>
-          <p class="text-xs text-blue-600 mt-2">+12 vs ayer</p>
-        </div>
-
-        <div class="bg-white p-6 rounded-lg shadow-sm border">
-          <div class="flex items-center justify-between">
-            <div>
-              <p class="text-sm font-medium text-gray-600">Descuentos</p>
-              <p class="text-2xl font-bold text-gray-900" id="totalDiscounts">
-                $0
-              </p>
-            </div>
-            <div class="bg-red-100 p-3 rounded-full">
-              <svg
-                class="w-6 h-6 text-red-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
-                ></path>
-              </svg>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Gráfico y Métodos de Pago -->
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-        <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-sm border">
-          <h3 class="text-lg font-semibold text-gray-900 mb-4">
-            Ventas por Hora
-          </h3>
-          <canvas id="salesChart" height="100"></canvas>
-        </div>
-
-        <div class="bg-white p-6 rounded-lg shadow-sm border">
-          <h3 class="text-lg font-semibold text-gray-900 mb-4">
-            Métodos de Pago
-          </h3>
-          <div class="space-y-4">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center">
-                <div class="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
-                <span class="text-sm font-medium text-gray-700">Efectivo</span>
-              </div>
-              <span class="text-sm font-bold text-gray-900">45%</span>
-            </div>
-            <div class="flex items-center justify-between">
-              <div class="flex items-center">
-                <div class="w-3 h-3 bg-blue-500 rounded-full mr-3"></div>
-                <span class="text-sm font-medium text-gray-700">Tarjeta</span>
-              </div>
-              <span class="text-sm font-bold text-gray-900">38%</span>
-            </div>
-            <div class="flex items-center justify-between">
-              <div class="flex items-center">
-                <div class="w-3 h-3 bg-purple-500 rounded-full mr-3"></div>
-                <span class="text-sm font-medium text-gray-700"
-                  >Transferencia</span
-                >
-              </div>
-              <span class="text-sm font-bold text-gray-900">17%</span>
-            </div>
-          </div>
         </div>
       </div>
 
@@ -197,6 +131,12 @@ import Layout from "../layouts/Layout.astro";
             <h3 class="text-lg font-semibold text-gray-900">Órdenes del Día</h3>
             <div class="flex space-x-2">
               <button
+                onclick="resetFilters()"
+                class="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition-colors text-sm"
+              >
+                Limpiar Filtros
+              </button>
+              <button
                 onclick="exportData()"
                 class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors text-sm"
               >
@@ -204,7 +144,7 @@ import Layout from "../layouts/Layout.astro";
               </button>
               <button
                 onclick="printReport()"
-                class="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition-colors text-sm"
+                class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors text-sm"
               >
                 Imprimir
               </button>
@@ -222,23 +162,7 @@ import Layout from "../layouts/Layout.astro";
                 >
                 <th
                   class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >Hora</th
-                >
-                <th
-                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >Empleado</th
-                >
-                <th
-                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >Mesa</th
-                >
-                <th
-                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >Pago</th
-                >
-                <th
-                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >Descuento</th
+                  >Fecha</th
                 >
                 <th
                   class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
@@ -251,7 +175,11 @@ import Layout from "../layouts/Layout.astro";
               </tr>
             </thead>
             <tbody id="ordersTable" class="bg-white divide-y divide-gray-200">
-              <!-- Datos se cargan dinámicamente -->
+              <tr>
+                <td colspan="4" class="px-6 py-4 text-center text-gray-500"
+                  >No hay datos disponibles</td
+                >
+              </tr>
             </tbody>
           </table>
         </div>
@@ -262,12 +190,14 @@ import Layout from "../layouts/Layout.astro";
         >
           <div class="flex-1 flex justify-between sm:hidden">
             <button
-              class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+              id="prevPageMobile"
+              class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Anterior
             </button>
             <button
-              class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+              id="nextPageMobile"
+              class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Siguiente
             </button>
@@ -276,50 +206,16 @@ import Layout from "../layouts/Layout.astro";
             class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between"
           >
             <div>
-              <p class="text-sm text-gray-700">
-                Mostrando <span class="font-medium">1</span> a <span
-                  class="font-medium">10</span
-                > de <span class="font-medium">342</span> resultados
+              <p class="text-sm text-gray-700" id="paginationInfo">
+                Mostrando 0 de 0 órdenes
               </p>
             </div>
             <div>
               <nav
                 class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px"
+                id="paginationControls"
               >
-                <button
-                  class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
-                >
-                  <span class="sr-only">Anterior</span>
-                  <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path
-                      fill-rule="evenodd"
-                      d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                      clip-rule="evenodd"></path>
-                  </svg>
-                </button>
-                <button
-                  class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
-                  >1</button
-                >
-                <button
-                  class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-blue-50 text-sm font-medium text-blue-600"
-                  >2</button
-                >
-                <button
-                  class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
-                  >3</button
-                >
-                <button
-                  class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
-                >
-                  <span class="sr-only">Siguiente</span>
-                  <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path
-                      fill-rule="evenodd"
-                      d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                      clip-rule="evenodd"></path>
-                  </svg>
-                </button>
+                <!-- Los controles de paginación se generan dinámicamente -->
               </nav>
             </div>
           </div>
@@ -327,210 +223,402 @@ import Layout from "../layouts/Layout.astro";
       </div>
     </div>
 
+    <!-- Modal de confirmación -->
+    <div
+      id="deleteModal"
+      class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden"
+    >
+      <div
+        class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white"
+      >
+        <div class="mt-3 text-center">
+          <div
+            class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100"
+          >
+            <svg
+              class="h-6 w-6 text-red-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
+              ></path>
+            </svg>
+          </div>
+          <h3 class="text-lg leading-6 font-medium text-gray-900 mt-4">
+            Confirmar eliminación
+          </h3>
+          <div class="mt-2 px-7 py-3">
+            <p class="text-sm text-gray-500">
+              ¿Estás seguro de que deseas eliminar esta orden? Esta acción no se
+              puede deshacer.
+            </p>
+          </div>
+          <div class="items-center px-4 py-3">
+            <button
+              id="confirmDelete"
+              class="px-4 py-2 bg-red-500 text-white text-base font-medium rounded-md w-24 mr-2 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-300"
+            >
+              Eliminar
+            </button>
+            <button
+              onclick="closeDeleteModal()"
+              class="px-4 py-2 bg-gray-500 text-white text-base font-medium rounded-md w-24 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-300"
+            >
+              Cancelar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <script>
-      // Datos de ejemplo
-      const sampleOrders = [
-        {
-          id: 1001,
-          date: "2025-05-28",
-          time: "08:30",
-          discount: 0,
-          total: 25.5,
-          made_by: "María García",
-          staff_id: "EMP001",
-          customer_phone: "3001234567",
-          table_name: "Mesa 1",
-          method_payment_id: "CASH",
-        },
-        {
-          id: 1002,
-          date: "2025-05-28",
-          time: "09:15",
-          discount: 2.5,
-          total: 32.0,
-          made_by: "Juan Pérez",
-          staff_id: "EMP002",
-          customer_phone: "3007654321",
-          table_name: "Mesa 3",
-          method_payment_id: "CARD",
-        },
-        {
-          id: 1003,
-          date: "2025-05-28",
-          time: "10:45",
-          discount: 0,
-          total: 18.75,
-          made_by: "Ana López",
-          staff_id: "EMP003",
-          customer_phone: null,
-          table_name: "Domicilio",
-          method_payment_id: "TRANSFER",
-        },
-        {
-          id: 1004,
-          date: "2025-05-28",
-          time: "11:20",
-          discount: 5.0,
-          total: 45.0,
-          made_by: "María García",
-          staff_id: "EMP001",
-          customer_phone: "3009876543",
-          table_name: "Mesa 5",
-          method_payment_id: "CASH",
-        },
-        {
-          id: 1005,
-          date: "2025-05-28",
-          time: "12:10",
-          discount: 0,
-          total: 28.9,
-          made_by: "Juan Pérez",
-          staff_id: "EMP002",
-          customer_phone: null,
-          table_name: "Para llevar",
-          method_payment_id: "CARD",
-        },
-      ];
+      const API_URL = "/api/getOrders";
 
-      // Inicializar fecha actual
-      document.getElementById("dateFilter").value = new Date()
-        .toISOString()
-        .split("T")[0];
+      // Variables globales
+      let allOrders = [];
+      let filteredOrders = [];
+      let currentPage = 1;
+      let orderToDelete = null;
+      const pageSize = 10;
 
-      // Cargar datos de la tabla
-      function loadOrdersTable() {
-        const tbody = document.getElementById("ordersTable");
-        tbody.innerHTML = "";
+      // Elementos del DOM
+      const loadingIndicator = document.getElementById("loadingIndicator");
+      const totalSalesEl = document.getElementById("totalSales");
+      const totalOrdersEl = document.getElementById("totalOrders");
+      const ordersTable = document.getElementById("ordersTable");
+      const paginationControls = document.getElementById("paginationControls");
+      const paginationInfo = document.getElementById("paginationInfo");
+      const prevPageBtn = document.getElementById("prevPageMobile");
+      const nextPageBtn = document.getElementById("nextPageMobile");
+      const errorMessage = document.getElementById("errorMessage");
+      const successMessage = document.getElementById("successMessage");
+      const deleteModal = document.getElementById("deleteModal");
 
-        sampleOrders.forEach((order) => {
-          const row = document.createElement("tr");
-          row.className = "hover:bg-gray-50";
+      // Mostrar mensaje de error
+      function showError(message) {
+        document.getElementById("errorText").textContent = message;
+        errorMessage.classList.remove("hidden");
+        successMessage.classList.add("hidden");
+        setTimeout(() => {
+          errorMessage.classList.add("hidden");
+        }, 5000);
+      }
 
-          row.innerHTML = `
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${order.id}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${order.time}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${order.made_by}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${order.table_name}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getPaymentBadgeClass(order.method_payment_id)}">
-                            ${getPaymentMethodName(order.method_payment_id)}
-                        </span>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$${order.discount.toFixed(2)}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">$${order.total.toFixed(2)}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <button onclick="viewOrder(${order.id})" class="text-blue-600 hover:text-blue-900 mr-3">Ver</button>
-                        <button onclick="editOrder(${order.id})" class="text-indigo-600 hover:text-indigo-900">Editar</button>
-                    </td>
+      // Mostrar mensaje de éxito
+      function showSuccess(message) {
+        document.getElementById("successText").textContent = message;
+        successMessage.classList.remove("hidden");
+        errorMessage.classList.add("hidden");
+        setTimeout(() => {
+          successMessage.classList.add("hidden");
+        }, 5000);
+      }
+
+      // Paginación
+      function paginate(array, page, pageSize) {
+        const start = (page - 1) * pageSize;
+        return array.slice(start, start + pageSize);
+      }
+
+      // Renderizar tabla
+      function renderTable(page = 1) {
+        const ordersToShow =
+          filteredOrders.length > 0 ? filteredOrders : allOrders;
+        const paginatedOrders = paginate(ordersToShow, page, pageSize);
+        ordersTable.innerHTML = "";
+
+        if (paginatedOrders.length === 0) {
+          ordersTable.innerHTML = `
+                    <tr>
+                        <td colspan="4" class="px-6 py-4 text-center text-gray-500">No hay datos disponibles</td>
+                    </tr>
                 `;
+        } else {
+          paginatedOrders.forEach((order) => {
+            const formattedDate = order.date
+              ? new Date(order.date).toLocaleDateString("es-ES")
+              : "N/A";
+            const formattedTotal = order.total
+              ? parseFloat(order.total).toFixed(2)
+              : "0.00";
 
-          tbody.appendChild(row);
-        });
+            const row = `
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${order.id || "N/A"}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${formattedDate}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">$${formattedTotal}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                <button onclick="viewOrder(${order.id})" class="text-blue-600 hover:underline mr-3">Ver</button>
+                                <button onclick="openDeleteModal(${order.id})" class="text-red-600 hover:underline">Eliminar</button>
+                            </td>
+                        </tr>
+                    `;
+            ordersTable.insertAdjacentHTML("beforeend", row);
+          });
+        }
+
+        updatePaginationControls(ordersToShow);
+        paginationInfo.textContent = `Mostrando ${paginatedOrders.length} de ${ordersToShow.length} órdenes`;
       }
 
-      function getPaymentMethodName(id) {
-        const methods = {
-          CASH: "Efectivo",
-          CARD: "Tarjeta",
-          TRANSFER: "Transferencia",
+      // Actualizar controles de paginación
+      function updatePaginationControls(orders) {
+        const totalPages = Math.ceil(orders.length / pageSize);
+        paginationControls.innerHTML = "";
+
+        if (totalPages <= 1) {
+          prevPageBtn.disabled = true;
+          nextPageBtn.disabled = true;
+          return;
+        }
+
+        // Lógica para mostrar solo algunos números de página
+        let startPage = Math.max(1, currentPage - 2);
+        let endPage = Math.min(totalPages, currentPage + 2);
+
+        // Ajustar si estamos cerca del inicio o final
+        if (currentPage <= 3) {
+          endPage = Math.min(5, totalPages);
+        }
+        if (currentPage >= totalPages - 2) {
+          startPage = Math.max(1, totalPages - 4);
+        }
+
+        // Botón "Primera página"
+        if (startPage > 1) {
+          const firstBtn = document.createElement("button");
+          firstBtn.textContent = "1";
+          firstBtn.className =
+            "relative inline-flex items-center px-4 py-2 border bg-white text-gray-700 border-gray-300 hover:bg-gray-50 text-sm font-medium";
+          firstBtn.addEventListener("click", () => {
+            currentPage = 1;
+            renderTable(currentPage);
+          });
+          paginationControls.appendChild(firstBtn);
+
+          if (startPage > 2) {
+            const ellipsis = document.createElement("span");
+            ellipsis.textContent = "...";
+            ellipsis.className =
+              "relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700";
+            paginationControls.appendChild(ellipsis);
+          }
+        }
+
+        // Páginas principales
+        for (let i = startPage; i <= endPage; i++) {
+          const btn = document.createElement("button");
+          btn.textContent = i;
+          btn.className =
+            "relative inline-flex items-center px-4 py-2 border text-sm font-medium " +
+            (i === currentPage
+              ? "z-10 bg-blue-600 text-white border-blue-600"
+              : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50");
+          btn.addEventListener("click", () => {
+            currentPage = i;
+            renderTable(currentPage);
+          });
+          paginationControls.appendChild(btn);
+        }
+
+        // Botón "Última página"
+        if (endPage < totalPages) {
+          if (endPage < totalPages - 1) {
+            const ellipsis = document.createElement("span");
+            ellipsis.textContent = "...";
+            ellipsis.className =
+              "relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700";
+            paginationControls.appendChild(ellipsis);
+          }
+
+          const lastBtn = document.createElement("button");
+          lastBtn.textContent = totalPages;
+          lastBtn.className =
+            "relative inline-flex items-center px-4 py-2 border bg-white text-gray-700 border-gray-300 hover:bg-gray-50 text-sm font-medium";
+          lastBtn.addEventListener("click", () => {
+            currentPage = totalPages;
+            renderTable(currentPage);
+          });
+          paginationControls.appendChild(lastBtn);
+        }
+
+        // Actualizar botones móviles
+        prevPageBtn.disabled = currentPage === 1;
+        nextPageBtn.disabled = currentPage === totalPages;
+
+        prevPageBtn.onclick = () => {
+          if (currentPage > 1) {
+            currentPage--;
+            renderTable(currentPage);
+          }
         };
-        return methods[id] || id;
-      }
 
-      function getPaymentBadgeClass(id) {
-        const classes = {
-          CASH: "bg-green-100 text-green-800",
-          CARD: "bg-blue-100 text-blue-800",
-          TRANSFER: "bg-purple-100 text-purple-800",
+        nextPageBtn.onclick = () => {
+          if (currentPage < totalPages) {
+            currentPage++;
+            renderTable(currentPage);
+          }
         };
-        return classes[id] || "bg-gray-100 text-gray-800";
       }
 
-      // Inicializar gráfico
-      function initChart() {
-        const ctx = document.getElementById("salesChart").getContext("2d");
-        new Chart(ctx, {
-          type: "line",
-          data: {
-            labels: [
-              "08:00",
-              "09:00",
-              "10:00",
-              "11:00",
-              "12:00",
-              "13:00",
-              "14:00",
-              "15:00",
-              "16:00",
-              "17:00",
-              "18:00",
-              "19:00",
-            ],
-            datasets: [
-              {
-                label: "Ventas ($)",
-                data: [
-                  450, 680, 920, 1200, 1800, 2100, 1900, 1600, 1400, 1100, 800,
-                  650,
-                ],
-                borderColor: "rgb(59, 130, 246)",
-                backgroundColor: "rgba(59, 130, 246, 0.1)",
-                tension: 0.4,
-                fill: true,
-              },
-            ],
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-              y: {
-                beginAtZero: true,
-                ticks: {
-                  callback: function (value) {
-                    return "$" + value;
-                  },
-                },
-              },
-            },
-            plugins: {
-              legend: {
-                display: false,
-              },
-            },
-          },
-        });
+      // Obtener órdenes del servidor
+      async function fetchOrders() {
+        loadingIndicator.classList.remove("hidden");
+        try {
+          const response = await fetch(API_URL);
+          if (!response.ok) {
+            throw new Error(`Error ${response.status}: ${response.statusText}`);
+          }
+
+          const data = await response.json();
+
+          if (!Array.isArray(data)) {
+            throw new Error("Formato de datos inesperado");
+          }
+
+          allOrders = data;
+          filteredOrders = [];
+
+          // Calcular métricas
+          const totalSales = allOrders.reduce(
+            (sum, order) => sum + (parseFloat(order.total) || 0),
+            0
+          );
+          const totalOrdersCount = allOrders.length;
+
+          totalSalesEl.textContent = `$${totalSales.toFixed(2)}`;
+          totalOrdersEl.textContent = totalOrdersCount;
+
+          currentPage = 1;
+          renderTable(currentPage);
+        } catch (error) {
+          console.error("Error al cargar los datos:", error);
+          showError("Error al cargar los datos: " + error.message);
+        } finally {
+          loadingIndicator.classList.add("hidden");
+        }
       }
 
-      // Funciones de la interfaz
+      // Aplicar filtros
       function applyFilters() {
-        console.log("Aplicando filtros...");
-        // Aquí iría la lógica para filtrar los datos
-        loadOrdersTable();
+        const dateFilter = document.getElementById("dateFilter").value;
+        const minAmount =
+          parseFloat(document.getElementById("minAmount").value) || 0;
+
+        if (!dateFilter && minAmount === 0) {
+          filteredOrders = [];
+          currentPage = 1;
+          renderTable(currentPage);
+          return;
+        }
+
+        filteredOrders = allOrders.filter((order) => {
+          let matchesDate = true;
+          let matchesAmount = true;
+
+          if (dateFilter) {
+            const orderDate = new Date(order.date).toISOString().split("T")[0];
+            matchesDate = orderDate === dateFilter;
+          }
+
+          if (minAmount > 0) {
+            const orderTotal = parseFloat(order.total) || 0;
+            matchesAmount = orderTotal >= minAmount;
+          }
+
+          return matchesDate && matchesAmount;
+        });
+
+        currentPage = 1;
+        renderTable(currentPage);
       }
 
-      function viewOrder(id) {
-        alert(`Ver detalles de la orden ${id}`);
+      // Limpiar filtros
+      function resetFilters() {
+        document.getElementById("dateFilter").value = "";
+        document.getElementById("minAmount").value = "";
+        filteredOrders = [];
+        currentPage = 1;
+        renderTable(currentPage);
       }
 
-      function editOrder(id) {
-        alert(`Editar orden ${id}`);
+      // Abrir modal de eliminación
+      function openDeleteModal(orderId) {
+        orderToDelete = orderId;
+        deleteModal.classList.remove("hidden");
       }
 
+      // Cerrar modal de eliminación
+      function closeDeleteModal() {
+        orderToDelete = null;
+        deleteModal.classList.add("hidden");
+      }
+
+      // Eliminar orden
+      async function deleteOrder() {
+        if (!orderToDelete) return;
+
+        try {
+          const response = await fetch(`${API_URL}?id=${orderToDelete}`, {
+            method: "DELETE",
+          });
+
+          const result = await response.json();
+
+          if (!response.ok) {
+            throw new Error(result.error || "Error al eliminar la orden");
+          }
+
+          showSuccess("Orden eliminada correctamente");
+          closeDeleteModal();
+          await fetchOrders(); // Recargar datos
+        } catch (error) {
+          console.error("Error al eliminar la orden:", error);
+          showError("Error al eliminar la orden: " + error.message);
+        }
+      }
+
+      // Ver orden (placeholder)
+      function viewOrder(orderId) {
+        alert(
+          `Ver detalles de la orden ${orderId} - Funcionalidad pendiente de implementar`
+        );
+      }
+
+      // Exportar datos (placeholder)
       function exportData() {
-        alert("Exportando datos a Excel...");
-        // Aquí iría la lógica para exportar
+        alert("Funcionalidad de exportar aún no implementada.");
       }
 
+      // Imprimir reporte
       function printReport() {
         window.print();
       }
 
-      // Inicializar la aplicación
-      document.addEventListener("DOMContentLoaded", function () {
-        loadOrdersTable();
-        initChart();
+      // Event listeners
+      document.getElementById("confirmDelete").onclick = deleteOrder;
+
+      // Cerrar modal con Escape
+      document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") {
+          closeDeleteModal();
+        }
       });
+
+      // Cerrar modal clickeando fuera
+      deleteModal.addEventListener("click", function (event) {
+        if (event.target === deleteModal) {
+          closeDeleteModal();
+        }
+      });
+
+      // Inicialización
+      fetchOrders();
     </script>
   </body>
 </Layout>

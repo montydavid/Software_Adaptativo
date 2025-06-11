@@ -1,251 +1,546 @@
 ---
-import Layout from '../layouts/Layout.astro';
+import Layout from "../layouts/Layout.astro";
 ---
 
 <Layout>
-
-<body class="min-h-screen bg-gradient-to-br from-orange-50 to-red-50">
+  <body class="min-h-screen bg-gradient-to-br from-orange-50 to-red-50">
     <div id="app" class="p-6">
-        <div class="max-w-7xl mx-auto">
-            <!-- Header -->
-            <div class="bg-white rounded-xl shadow-lg p-6 mb-8 animate-fade-in">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                    <div>
-                        <h1 class="text-3xl font-bold text-gray-800 mb-2">🍔 Gestión de Productos</h1>
-                        <p class="text-gray-600">Administra el menú de tu restaurante</p>
-                    </div>
-                    <button
-                        onclick="openModal()"
-                        class="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white px-6 py-3 rounded-lg flex items-center gap-2 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
-                    >
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                        </svg>
-                        Nuevo Producto
-                    </button>
-                </div>
+      <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-8 animate-fade-in">
+          <div
+            class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
+          >
+            <div>
+              <h1 class="text-3xl font-bold text-gray-800 mb-2">
+                🍔 Gestión de Productos
+              </h1>
+              <p class="text-gray-600">Administra el menú de tu restaurante</p>
             </div>
+            <button
+              onclick="openModal()"
+              class="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white px-6 py-3 rounded-lg flex items-center gap-2 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+            >
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 4v16m8-8H4"></path>
+              </svg>
+              Nuevo Producto
+            </button>
+          </div>
+        </div>
 
-            <!-- Search Bar -->
-            <div class="bg-white rounded-xl shadow-lg p-6 mb-8 animate-fade-in">
+        <!-- Loading State -->
+        <div
+          id="loadingState"
+          class="bg-white rounded-xl shadow-lg p-12 text-center"
+        >
+          <div
+            class="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"
+          >
+          </div>
+          <p class="text-gray-600">Cargando productos...</p>
+        </div>
+
+        <!-- Search Bar -->
+        <div
+          id="searchSection"
+          class="bg-white rounded-xl shadow-lg p-6 mb-8 animate-fade-in hidden"
+        >
+          <div class="relative">
+            <svg
+              class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="m21 21-6-6m2-5a7 7 0 1 1-14 0 7 7 0 0 1 14 0z"></path>
+            </svg>
+            <input
+              type="text"
+              id="searchInput"
+              placeholder="Buscar productos por nombre o descripción..."
+              oninput="filterProducts()"
+              class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none"
+            />
+          </div>
+        </div>
+
+        <!-- Products Grid -->
+        <div
+          id="productsGrid"
+          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8 hidden"
+        >
+          <!-- Products will be rendered here -->
+        </div>
+
+        <!-- No Results Message -->
+        <div
+          id="noResults"
+          class="bg-white rounded-xl shadow-lg p-12 text-center hidden"
+        >
+          <div class="text-gray-400 mb-4">
+            <svg
+              class="w-12 h-12 mx-auto"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="m21 21-6-6m2-5a7 7 0 1 1-14 0 7 7 0 0 1 14 0z"></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold text-gray-600 mb-2">
+            No se encontraron productos
+          </h3>
+          <p class="text-gray-500">
+            Intenta con una búsqueda diferente o agrega nuevos productos.
+          </p>
+        </div>
+
+        <!-- Error State -->
+        <div
+          id="errorState"
+          class="bg-white rounded-xl shadow-lg p-12 text-center hidden"
+        >
+          <div class="text-red-400 mb-4">
+            <svg
+              class="w-12 h-12 mx-auto"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold text-gray-600 mb-2">
+            Error al cargar productos
+          </h3>
+          <p class="text-gray-500 mb-4">
+            Hubo un problema al conectar con la base de datos.
+          </p>
+          <button
+            onclick="loadProducts()"
+            class="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white px-6 py-3 rounded-lg transition-all duration-200"
+          >
+            Reintentar
+          </button>
+        </div>
+      </div>
+
+      <!-- Modal -->
+      <div
+        id="modal"
+        class="fixed inset-0 bg-black bg-opacity-50 modal-backdrop items-center justify-center p-4 z-50 hidden"
+      >
+        <div
+          class="bg-white rounded-xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto animate-slide-up"
+        >
+          <div class="p-6">
+            <h2 id="modalTitle" class="text-2xl font-bold text-gray-800 mb-6">
+              Nuevo Producto
+            </h2>
+
+            <div class="space-y-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2"
+                  >ID del Producto</label
+                >
+                <input
+                  type="text"
+                  id="productId"
+                  maxlength="4"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none"
+                  required
+                />
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2"
+                  >Nombre</label
+                >
+                <input
+                  type="text"
+                  id="productName"
+                  maxlength="30"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none"
+                  required
+                />
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2"
+                  >Precio (COP)</label
+                >
                 <div class="relative">
-                    <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m21 21-6-6m2-5a7 7 0 1 1-14 0 7 7 0 0 1 14 0z"></path>
-                    </svg>
-                    <input
-                        type="text"
-                        id="searchInput"
-                        placeholder="Buscar productos por nombre o descripción..."
-                        oninput="filterProducts()"
-                        class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none"
-                    />
+                  <svg
+                    class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"
+                    ></path>
+                  </svg>
+                  <input
+                    type="number"
+                    id="productPrice"
+                    min="0"
+                    step="0.01"
+                    class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none"
+                    required
+                  />
                 </div>
-            </div>
+              </div>
 
-            <!-- Products Grid -->
-            <div id="productsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                <!-- Products will be rendered here -->
-            </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2"
+                  >Descripción</label
+                >
+                <textarea
+                  id="productDescription"
+                  rows="3"
+                  maxlength="100"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none resize-none"
+                ></textarea>
+              </div>
 
-            <!-- No Results Message -->
-            <div id="noResults" class="bg-white rounded-xl shadow-lg p-12 text-center hidden">
-                <div class="text-gray-400 mb-4">
-                    <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m21 21-6-6m2-5a7 7 0 1 1-14 0 7 7 0 0 1 14 0z"></path>
-                    </svg>
-                </div>
-                <h3 class="text-xl font-semibold text-gray-600 mb-2">No se encontraron productos</h3>
-                <p class="text-gray-500">Intenta con una búsqueda diferente o agrega nuevos productos.</p>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2"
+                  >Tipo de Producto</label
+                >
+                <select
+                  id="productType"
+                  onchange="toggleTypeFields()"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none"
+                >
+                  <option value="regular">Regular</option>
+                  <option value="offer">Oferta</option>
+                </select>
+              </div>
+
+              <div id="offerField" class="hidden">
+                <label class="block text-sm font-medium text-gray-700 mb-2"
+                  >ID de Oferta</label
+                >
+                <input
+                  type="text"
+                  id="offerId"
+                  maxlength="15"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none"
+                />
+              </div>
+
+              <div id="regularField">
+                <label class="block text-sm font-medium text-gray-700 mb-2"
+                  >ID Regular</label
+                >
+                <input
+                  type="text"
+                  id="regularId"
+                  maxlength="15"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none"
+                />
+              </div>
+
+              <div class="flex gap-3 pt-4">
+                <button
+                  onclick="closeModal()"
+                  class="flex-1 px-4 py-2 text-gray-700 bg-gray-200 hover:bg-gray-300 rounded-lg transition-colors duration-200"
+                >
+                  Cancelar
+                </button>
+                <button
+                  onclick="saveProduct()"
+                  class="flex-1 px-4 py-2 text-white bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 rounded-lg transition-all duration-200"
+                >
+                  <span id="saveButtonText">Crear</span>
+                </button>
+              </div>
             </div>
+          </div>
         </div>
-
-        <!-- Modal -->
-        <div id="modal" class="fixed inset-0 bg-black bg-opacity-50 modal-backdrop items-center justify-center p-4 z-50 hidden">
-            <div class="bg-white rounded-xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto animate-slide-up">
-                <div class="p-6">
-                    <h2 id="modalTitle" class="text-2xl font-bold text-gray-800 mb-6">Nuevo Producto</h2>
-
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">ID del Producto</label>
-                            <input
-                                type="text"
-                                id="productId"
-                                maxlength="4"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none"
-                                required
-                            />
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Nombre</label>
-                            <input
-                                type="text"
-                                id="productName"
-                                maxlength="30"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none"
-                                required
-                            />
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Precio (COP)</label>
-                            <div class="relative">
-                                <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-                                </svg>
-                                <input
-                                    type="number"
-                                    id="productPrice"
-                                    min="0"
-                                    step="0.01"
-                                    class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none"
-                                    required
-                                />
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Descripción</label>
-                            <textarea
-                                id="productDescription"
-                                rows="3"
-                                maxlength="100"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none resize-none"
-                            ></textarea>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de Producto</label>
-                            <select
-                                id="productType"
-                                onchange="toggleTypeFields()"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none"
-                            >
-                                <option value="regular">Regular</option>
-                                <option value="offer">Oferta</option>
-                            </select>
-                        </div>
-
-                        <div id="offerField" class="hidden">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">ID de Oferta</label>
-                            <input
-                                type="text"
-                                id="offerId"
-                                maxlength="15"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none"
-                            />
-                        </div>
-
-                        <div id="regularField">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">ID Regular</label>
-                            <input
-                                type="text"
-                                id="regularId"
-                                maxlength="15"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none"
-                            />
-                        </div>
-
-                        <div class="flex gap-3 pt-4">
-                            <button
-                                onclick="closeModal()"
-                                class="flex-1 px-4 py-2 text-gray-700 bg-gray-200 hover:bg-gray-300 rounded-lg transition-colors duration-200"
-                            >
-                                Cancelar
-                            </button>
-                            <button
-                                onclick="saveProduct()"
-                                class="flex-1 px-4 py-2 text-white bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 rounded-lg transition-all duration-200"
-                            >
-                                <span id="saveButtonText">Crear</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
+  </body>
 
-    <script>
-        // Application State
-        let products = [
-            {
-                id: 'P001',
-                name: 'Hamburguesa Clásica',
-                price: 12500,
-                description: 'Hamburguesa con carne, lechuga, tomate y queso',
-                offerId: 'OFF001',
-                regularId: null,
-                type: 'offer'
-            },
-            {
-                id: 'P002',
-                name: 'Pizza Pepperoni',
-                price: 18000,
-                description: 'Pizza familiar con pepperoni y queso mozzarella',
-                offerId: null,
-                regularId: 'REG001',
-                type: 'regular'
-            },
-            {
-                id: 'P003',
-                name: 'Combo Familiar',
-                price: 35000,
-                description: '2 hamburguesas + papas grandes + 2 gaseosas',
-                offerId: 'OFF002',
-                regularId: null,
-                type: 'offer'
-            }
-        ];
+  <script>
+    // Application State
+    let products = [];
+    let editingProduct = null;
+    let filteredProducts = [];
 
-        let editingProduct = null;
-        let filteredProducts = [...products];
+    // API Functions
+    async function loadProducts() {
+      try {
+        showLoadingState();
+        const response = await fetch("/api/productos");
 
-        // Utility Functions
-        function formatPrice(price) {
-            return new Intl.NumberFormat('es-CO', {
-                style: 'currency',
-                currency: 'COP',
-                minimumFractionDigits: 0
-            }).format(price);
+        if (!response.ok) {
+          throw new Error("Error al cargar productos");
         }
 
-        // Render Functions
-        function renderProducts() {
-            const grid = document.getElementById('productsGrid');
-            const noResults = document.getElementById('noResults');
-            
-            if (filteredProducts.length === 0) {
-                grid.innerHTML = '';
-                noResults.classList.remove('hidden');
-                return;
-            }
-            
-            noResults.classList.add('hidden');
-            
-            grid.innerHTML = filteredProducts.map(product => `
-                <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 animate-slide-up">
-                    <div class="h-2 ${product.type === 'offer' ? 'bg-gradient-to-r from-green-400 to-blue-500' : 'bg-gradient-to-r from-orange-400 to-red-500'}"></div>
-                    
-                    <div class="p-6">
-                        <div class="flex justify-between items-start mb-4">
-                            <div class="flex-1">
-                                <div class="flex items-center gap-2 mb-2">
-                                    <h3 class="text-xl font-bold text-gray-800">${product.name}</h3>
-                                    <span class="px-2 py-1 rounded-full text-xs font-medium ${
-                                        product.type === 'offer' 
-                                            ? 'bg-green-100 text-green-800' 
-                                            : 'bg-orange-100 text-orange-800'
-                                    }">
-                                        ${product.type === 'offer' ? 'Oferta' : 'Regular'}
-                                    </span>
-                                </div>
-                                <p class="text-sm text-gray-500 mb-2">ID: ${product.id}</p>
-                                <p class="text-2xl font-bold text-orange-600 mb-3">${formatPrice(product.price)}</p>
-                            </div>
-                        </div>
+        const data = await response.json();
+        products = data.map((product) => ({
+          id: product.id,
+          name: product.name,
+          price: parseFloat(product.price),
+          description: product.description || "",
+          offerId: product.offer_id || null,
+          regularId: product.regular_id || null,
+          type: product.offer_id ? "offer" : "regular",
+        }));
 
+        filteredProducts = [...products];
+        hideLoadingState();
+        renderProducts();
+      } catch (error) {
+        console.error("Error loading products:", error);
+        showErrorState();
+      }
+    }
+
+    async function createProduct(productData) {
+      try {
+        const response = await fetch("/api/productos", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(productData),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => null);
+          throw new Error(errorData?.message || "Error al crear producto");
+        }
+
+        await loadProducts();
+        return true;
+      } catch (error) {
+        console.error("Error creating product:", error);
+        showNotification(
+          error.message || "Error al crear el producto",
+          "error"
+        );
+        return false;
+      }
+    }
+
+    async function updateProduct(productId, productData) {
+      try {
+        const response = await fetch(`/api/productos/${productId}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(productData),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => null);
+          throw new Error(errorData?.message || "Error al actualizar producto");
+        }
+
+        await loadProducts();
+        return true;
+      } catch (error) {
+        console.error("Error updating product:", error);
+        showNotification(
+          error.message || "Error al actualizar el producto",
+          "error"
+        );
+        return false;
+      }
+    }
+
+    async function deleteProductFromDB(productId) {
+      try {
+        const response = await fetch(`/api/productos/${productId}`, {
+          method: "DELETE",
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => null);
+          throw new Error(errorData?.message || "Error al eliminar producto");
+        }
+
+        await loadProducts();
+        return true;
+      } catch (error) {
+        console.error("Error deleting product:", error);
+        showNotification(
+          error.message || "Error al eliminar el producto",
+          "error"
+        );
+        return false;
+      }
+    }
+
+    // UI State Functions
+    function showLoadingState() {
+      document.getElementById("loadingState").classList.remove("hidden");
+      document.getElementById("searchSection").classList.add("hidden");
+      document.getElementById("productsGrid").classList.add("hidden");
+      document.getElementById("errorState").classList.add("hidden");
+      document.getElementById("noResults").classList.add("hidden");
+    }
+
+    function hideLoadingState() {
+      document.getElementById("loadingState").classList.add("hidden");
+      document.getElementById("searchSection").classList.remove("hidden");
+      document.getElementById("productsGrid").classList.remove("hidden");
+    }
+
+    function showErrorState() {
+      document.getElementById("loadingState").classList.add("hidden");
+      document.getElementById("searchSection").classList.add("hidden");
+      document.getElementById("productsGrid").classList.add("hidden");
+      document.getElementById("errorState").classList.remove("hidden");
+      document.getElementById("noResults").classList.add("hidden");
+    }
+
+    // Utility Functions
+    function formatPrice(price) {
+      return new Intl.NumberFormat("es-CO", {
+        style: "currency",
+        currency: "COP",
+        minimumFractionDigits: 0,
+      }).format(price);
+    }
+
+    // Función para mostrar notificaciones
+    function showNotification(message, type = "info") {
+      // Crear elemento de notificación
+      const notification = document.createElement("div");
+      notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg max-w-sm transition-all duration-300 transform translate-x-full`;
+
+      // Estilos según el tipo
+      const styles = {
+        success: "bg-green-500 text-white",
+        error: "bg-red-500 text-white",
+        info: "bg-blue-500 text-white",
+        warning: "bg-yellow-500 text-black",
+      };
+
+      notification.className += " " + styles[type];
+      notification.innerHTML = `
+    <div class="flex items-center gap-2">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        ${
+          type === "success"
+            ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>'
+            : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>'
+        }
+      </svg>
+      <span>${message}</span>
+    </div>
+  `;
+
+      document.body.appendChild(notification);
+
+      // Animar entrada
+      setTimeout(() => {
+        notification.classList.remove("translate-x-full");
+      }, 100);
+
+      // Remover después de 3 segundos
+      setTimeout(() => {
+        notification.classList.add("translate-x-full");
+        setTimeout(() => {
+          if (document.body.contains(notification)) {
+            document.body.removeChild(notification);
+          }
+        }, 300);
+      }, 3000);
+    }
+
+    // Función para filtrar productos
+    function filterProducts() {
+      const searchTerm = document
+        .getElementById("searchInput")
+        .value.toLowerCase();
+
+      if (searchTerm === "") {
+        filteredProducts = [...products];
+      } else {
+        filteredProducts = products.filter(
+          (product) =>
+            product.name.toLowerCase().includes(searchTerm) ||
+            (product.description &&
+              product.description.toLowerCase().includes(searchTerm)) ||
+            product.id.toLowerCase().includes(searchTerm)
+        );
+      }
+
+      renderProducts();
+    }
+
+    // Render Functions
+    function renderProducts() {
+      const grid = document.getElementById("productsGrid");
+      const noResults = document.getElementById("noResults");
+
+      if (filteredProducts.length === 0) {
+        grid.innerHTML = "";
+        grid.classList.add("hidden");
+        noResults.classList.remove("hidden");
+        return;
+      }
+
+      noResults.classList.add("hidden");
+      grid.classList.remove("hidden");
+
+      grid.innerHTML = filteredProducts
+        .map(
+          (product) => `
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 animate-slide-up">
+                <div class="h-2 ${product.type === "offer" ? "bg-gradient-to-r from-green-400 to-blue-500" : "bg-gradient-to-r from-orange-400 to-red-500"}"></div>
+                
+                <div class="p-6">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-2">
+                                <h3 class="text-xl font-bold text-gray-800">${product.name}</h3>
+                                <span class="px-2 py-1 rounded-full text-xs font-medium ${
+                                  product.type === "offer"
+                                    ? "bg-green-100 text-green-800"
+                                    : "bg-orange-100 text-orange-800"
+                                }">
+                                    ${product.type === "offer" ? "Oferta" : "Regular"}
+                                </span>
+                            </div>
+                            <p class="text-sm text-gray-500 mb-2">ID: ${product.id}</p>
+                            <p class="text-2xl font-bold text-orange-600 mb-3">${formatPrice(product.price)}</p>
+                        </div>
+                    </div>
+
+                    ${
+                      product.description
+                        ? `
                         <div class="mb-4">
                             <div class="flex items-start gap-2 mb-2">
                                 <svg class="w-4 h-4 text-gray-400 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -254,190 +549,352 @@ import Layout from '../layouts/Layout.astro';
                                 <p class="text-gray-600 text-sm">${product.description}</p>
                             </div>
                         </div>
+                    `
+                        : ""
+                    }
 
-                        <div class="mb-4">
-                            ${product.offerId ? `
-                                <div class="flex items-center gap-2 text-sm text-green-600">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
-                                    </svg>
-                                    <span>Oferta ID: ${product.offerId}</span>
-                                </div>
-                            ` : ''}
-                            ${product.regularId ? `
-                                <div class="flex items-center gap-2 text-sm text-orange-600">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
-                                    </svg>
-                                    <span>Regular ID: ${product.regularId}</span>
-                                </div>
-                            ` : ''}
-                        </div>
+                    <div class="mb-4">
+                        ${
+                          product.offerId
+                            ? `
+                            <div class="flex items-center gap-2 text-sm text-green-600">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+                                </svg>
+                                <span>Oferta ID: ${product.offerId}</span>
+                            </div>
+                        `
+                            : ""
+                        }
+                        ${
+                          product.regularId
+                            ? `
+                            <div class="flex items-center gap-2 text-sm text-orange-600">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+                                </svg>
+                                <span>Regular ID: ${product.regularId}</span>
+                            </div>
+                        `
+                            : ""
+                        }
+                    </div>
 
-                        <div class="flex gap-2">
-                            <button
-                                onclick="editProduct('${product.id}')"
-                                class="flex-1 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg flex items-center justify-center gap-2 transition-colors duration-200"
-                            >
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                                </svg>
-                                Editar
-                            </button>
-                            <button
-                                onclick="deleteProduct('${product.id}')"
-                                class="flex-1 bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg flex items-center justify-center gap-2 transition-colors duration-200"
-                            >
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                </svg>
-                                Eliminar
-                            </button>
-                        </div>
+                    <div class="flex gap-2">
+                        <button
+                            onclick="editProduct('${product.id}')"
+                            class="flex-1 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg flex items-center justify-center gap-2 transition-colors duration-200"
+                        >
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                            </svg>
+                            Editar
+                        </button>
+                        <button
+                            onclick="deleteProduct('${product.id}')"
+                            class="flex-1 bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg flex items-center justify-center gap-2 transition-colors duration-200"
+                        >
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                            Eliminar
+                        </button>
                     </div>
                 </div>
-            `).join('');
+            </div>
+        `
+        )
+        .join("");
+    }
+
+    // Modal Functions
+    function openModal(product = null) {
+      const modal = document.getElementById("modal");
+      const modalTitle = document.getElementById("modalTitle");
+      const saveButtonText = document.getElementById("saveButtonText");
+
+      if (product) {
+        editingProduct = product;
+        modalTitle.textContent = "Editar Producto";
+        saveButtonText.textContent = "Actualizar";
+
+        // Fill form with product data
+        document.getElementById("productId").value = product.id;
+        document.getElementById("productId").readOnly = true;
+        document.getElementById("productName").value = product.name;
+        document.getElementById("productPrice").value = product.price;
+        document.getElementById("productDescription").value =
+          product.description || "";
+        document.getElementById("productType").value = product.type;
+
+        if (product.type === "offer") {
+          document.getElementById("offerId").value = product.offerId || "";
+          document.getElementById("regularId").value = "";
+        } else {
+          document.getElementById("regularId").value = product.regularId || "";
+          document.getElementById("offerId").value = "";
+        }
+      } else {
+        editingProduct = null;
+        modalTitle.textContent = "Nuevo Producto";
+        saveButtonText.textContent = "Crear";
+
+        // Clear form
+        document.getElementById("productId").value = "";
+        document.getElementById("productId").readOnly = false;
+        document.getElementById("productName").value = "";
+        document.getElementById("productPrice").value = "";
+        document.getElementById("productDescription").value = "";
+        document.getElementById("productType").value = "regular";
+        document.getElementById("offerId").value = "";
+        document.getElementById("regularId").value = "";
+      }
+
+      toggleTypeFields();
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+
+      // Enfocar el primer campo editable
+      setTimeout(() => {
+        if (editingProduct) {
+          document.getElementById("productName").focus();
+        } else {
+          document.getElementById("productId").focus();
+        }
+      }, 100);
+    }
+
+    function closeModal() {
+      const modal = document.getElementById("modal");
+      modal.classList.add("hidden");
+      modal.classList.remove("flex");
+    }
+
+    function toggleTypeFields() {
+      const productType = document.getElementById("productType").value;
+      const offerField = document.getElementById("offerField");
+      const regularField = document.getElementById("regularField");
+
+      if (productType === "offer") {
+        offerField.classList.remove("hidden");
+        regularField.classList.add("hidden");
+      } else {
+        offerField.classList.add("hidden");
+        regularField.classList.remove("hidden");
+      }
+    }
+
+    // CRUD Functions
+    async function saveProduct() {
+      const id = document.getElementById("productId").value.trim();
+      const name = document.getElementById("productName").value.trim();
+      const priceValue = document.getElementById("productPrice").value.trim();
+      const description = document
+        .getElementById("productDescription")
+        .value.trim();
+      const type = document.getElementById("productType").value;
+      const offerId = document.getElementById("offerId").value.trim();
+      const regularId = document.getElementById("regularId").value.trim();
+
+      // Validaciones mejoradas
+      if (!id) {
+        alert("El ID del producto es requerido.");
+        document.getElementById("productId").focus();
+        return;
+      }
+
+      if (!name) {
+        alert("El nombre del producto es requerido.");
+        document.getElementById("productName").focus();
+        return;
+      }
+
+      if (!priceValue || isNaN(priceValue) || parseFloat(priceValue) <= 0) {
+        alert("Por favor, ingrese un precio válido mayor a 0.");
+        document.getElementById("productPrice").focus();
+        return;
+      }
+
+      const price = parseFloat(priceValue);
+
+      // Validar que el ID no exista (solo para productos nuevos)
+      if (!editingProduct && products.some((p) => p.id === id)) {
+        alert("El ID ya existe. Por favor, use un ID diferente.");
+        document.getElementById("productId").focus();
+        return;
+      }
+
+      // Validar campos específicos según el tipo
+      if (type === "offer" && !offerId) {
+        alert("El ID de oferta es requerido para productos de tipo oferta.");
+        document.getElementById("offerId").focus();
+        return;
+      }
+
+      if (type === "regular" && !regularId) {
+        alert("El ID regular es requerido para productos regulares.");
+        document.getElementById("regularId").focus();
+        return;
+      }
+
+      // Preparar datos del producto
+      const productData = {
+        product_id: id,
+        product_name: name,
+        product_price: price,
+        product_description: description || null,
+        offer_id: type === "offer" ? offerId : null,
+        regular_id: type === "regular" ? regularId : null,
+      };
+
+      // Deshabilitar el botón de guardar mientras se procesa
+      const saveButton = document.querySelector(
+        '#modal button[onclick="saveProduct()"]'
+      );
+      const originalText = saveButton.innerHTML;
+      saveButton.disabled = true;
+      saveButton.innerHTML = editingProduct ? "Actualizando..." : "Creando...";
+
+      try {
+        let success = false;
+        if (editingProduct) {
+          success = await updateProduct(editingProduct.id, productData);
+        } else {
+          success = await createProduct(productData);
         }
 
-        // Filter Functions
-        function filterProducts() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            filteredProducts = products.filter(product =>
-                product.name.toLowerCase().includes(searchTerm) ||
-                product.description.toLowerCase().includes(searchTerm)
-            );
-            renderProducts();
+        if (success) {
+          closeModal();
+          // Mostrar mensaje de éxito
+          showNotification(
+            editingProduct
+              ? "Producto actualizado exitosamente"
+              : "Producto creado exitosamente",
+            "success"
+          );
+        }
+      } catch (error) {
+        console.error("Error al guardar producto:", error);
+      } finally {
+        // Rehabilitar el botón
+        saveButton.disabled = false;
+        saveButton.innerHTML = originalText;
+      }
+    }
+
+    function editProduct(id) {
+      const product = products.find((p) => p.id === id);
+      if (product) {
+        openModal(product);
+      }
+    }
+
+    async function deleteProduct(id) {
+      const product = products.find((p) => p.id === id);
+      if (!product) {
+        alert("Producto no encontrado.");
+        return;
+      }
+
+      const confirmed = confirm(
+        `¿Está seguro de que desea eliminar el producto "${product.name}"?\n\nEsta acción no se puede deshacer.`
+      );
+
+      if (confirmed) {
+        // Encontrar el botón de eliminar y deshabilitarlo
+        const deleteButtons = document.querySelectorAll(
+          `button[onclick="deleteProduct('${id}')"]`
+        );
+        const deleteButton = deleteButtons[0];
+
+        if (deleteButton) {
+          deleteButton.disabled = true;
+          deleteButton.innerHTML = `
+        <svg class="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+        </svg>
+        Eliminando...
+      `;
         }
 
-        // Modal Functions
-        function openModal(product = null) {
-            const modal = document.getElementById('modal');
-            const modalTitle = document.getElementById('modalTitle');
-            const saveButtonText = document.getElementById('saveButtonText');
-            
-            if (product) {
-                editingProduct = product;
-                modalTitle.textContent = 'Editar Producto';
-                saveButtonText.textContent = 'Actualizar';
-                
-                // Fill form with product data
-                document.getElementById('productId').value = product.id;
-                document.getElementById('productId').disabled = true;
-                document.getElementById('productName').value = product.name;
-                document.getElementById('productPrice').value = product.price;
-                document.getElementById('productDescription').value = product.description;
-                document.getElementById('productType').value = product.type;
-                document.getElementById('offerId').value = product.offerId || '';
-                document.getElementById('regularId').value = product.regularId || '';
-            } else {
-                editingProduct = null;
-                modalTitle.textContent = 'Nuevo Producto';
-                saveButtonText.textContent = 'Crear';
-                
-                // Clear form
-                document.getElementById('productId').value = '';
-                document.getElementById('productId').disabled = false;
-                document.getElementById('productName').value = '';
-                document.getElementById('productPrice').value = '';
-                document.getElementById('productDescription').value = '';
-                document.getElementById('productType').value = 'regular';
-                document.getElementById('offerId').value = '';
-                document.getElementById('regularId').value = '';
-            }
-            
-            toggleTypeFields();
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
+        try {
+          const success = await deleteProductFromDB(id);
+          if (success) {
+            showNotification("Producto eliminado exitosamente", "success");
+          }
+        } catch (error) {
+          console.error("Error al eliminar producto:", error);
+          // Rehabilitar el botón en caso de error
+          if (deleteButton) {
+            deleteButton.disabled = false;
+            deleteButton.innerHTML = `
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+          </svg>
+          Eliminar
+        `;
+          }
         }
+      }
+    }
 
-        function closeModal() {
-            const modal = document.getElementById('modal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
+    // Initialize
+    document.addEventListener("DOMContentLoaded", function () {
+      // Validación del ID del producto
+      const productIdInput = document.getElementById("productId");
+      if (productIdInput) {
+        productIdInput.addEventListener("input", function () {
+          this.value = this.value.toUpperCase(); // Convertir a mayúsculas
+        });
+      }
+
+      // Validación del precio
+      const priceInput = document.getElementById("productPrice");
+      if (priceInput) {
+        priceInput.addEventListener("input", function () {
+          if (this.value < 0) this.value = 0;
+        });
+      }
+
+      // Manejar Enter para enviar el formulario
+      const formInputs = [
+        "productId",
+        "productName",
+        "productPrice",
+        "productDescription",
+        "offerId",
+        "regularId",
+      ];
+      formInputs.forEach((inputId) => {
+        const input = document.getElementById(inputId);
+        if (input) {
+          input.addEventListener("keypress", function (e) {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              saveProduct();
+            }
+          });
         }
+      });
 
-        function toggleTypeFields() {
-            const productType = document.getElementById('productType').value;
-            const offerField = document.getElementById('offerField');
-            const regularField = document.getElementById('regularField');
-            
-            if (productType === 'offer') {
-                offerField.classList.remove('hidden');
-                regularField.classList.add('hidden');
-            } else {
-                offerField.classList.add('hidden');
-                regularField.classList.remove('hidden');
-            }
-        }
-
-        // CRUD Functions
-        function saveProduct() {
-            const id = document.getElementById('productId').value.trim();
-            const name = document.getElementById('productName').value.trim();
-            const price = parseFloat(document.getElementById('productPrice').value);
-            const description = document.getElementById('productDescription').value.trim();
-            const type = document.getElementById('productType').value;
-            const offerId = document.getElementById('offerId').value.trim();
-            const regularId = document.getElementById('regularId').value.trim();
-
-            // Validation
-            if (!id || !name || !price) {
-                alert('Por favor, complete todos los campos requeridos.');
-                return;
-            }
-
-            if (!editingProduct && products.some(p => p.id === id)) {
-                alert('El ID ya existe. Por favor, use un ID diferente.');
-                return;
-            }
-
-            const newProduct = {
-                id,
-                name,
-                price,
-                description,
-                offerId: type === 'offer' ? offerId : null,
-                regularId: type === 'regular' ? regularId : null,
-                type
-            };
-
-            if (editingProduct) {
-                const index = products.findIndex(p => p.id === editingProduct.id);
-                products[index] = newProduct;
-            } else {
-                products.push(newProduct);
-            }
-
-            filterProducts();
+      // Cerrar modal con Escape
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") {
+          const modal = document.getElementById("modal");
+          if (modal && !modal.classList.contains("hidden")) {
             closeModal();
+          }
         }
+      });
 
-        function editProduct(id) {
-            const product = products.find(p => p.id === id);
-            if (product) {
-                openModal(product);
-            }
-        }
+      loadProducts();
+    });
 
-        function deleteProduct(id) {
-            if (confirm('¿Está seguro de que desea eliminar este producto?')) {
-                products = products.filter(p => p.id !== id);
-                filterProducts();
-            }
-        }
-
-        // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
-            renderProducts();
-        });
-
-        // Close modal when clicking outside
-        document.getElementById('modal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeModal();
-            }
-        });
-    </script>
-</body>
+    // Close modal when clicking outside
+    document.getElementById("modal").addEventListener("click", function (e) {
+      if (e.target === this) {
+        closeModal();
+      }
+    });
+  </script>
 </Layout>
-

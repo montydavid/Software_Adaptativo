@@ -96,50 +96,10 @@ import Layout from "../layouts/Layout.astro";
           >
           </div>
         </div>
-
-        <!-- Paginación -->
-        <div class="mt-8 flex items-center justify-between p-2">
-          <div class="flex space-x-2">
-            <button
-              class="bg-gray-800 hover:bg-gray-700 text-white rounded-md px-4 py-2 flex items-center transition-colors"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-5 w-5"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fill-rule="evenodd"
-                  d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                  clip-rule="evenodd"></path>
-              </svg>
-              <span class="ml-1">Anterior</span>
-            </button>
-            <button
-              class="bg-gray-800 hover:bg-gray-700 text-white rounded-md px-4 py-2 flex items-center transition-colors"
-            >
-              <span class="mr-1">Siguiente</span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-5 w-5"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fill-rule="evenodd"
-                  d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                  clip-rule="evenodd"></path>
-              </svg>
-            </button>
-          </div>
-          <div class="text-gray-700 font-medium">
-            Página 1 de 1 | 5 Registros
-          </div>
-        </div>
       </div>
     </div>
   </div>
+
   <!-- Vista de pedido (inicialmente oculta) -->
   <div id="orderView" class="hidden">
     <div class="bg-gray-100 min-h-screen">
@@ -203,9 +163,9 @@ import Layout from "../layouts/Layout.astro";
                   class="bg-white border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 >
                   <option>Seleccione una Opción</option>
-                  <option>Juan Pérez</option>
-                  <option>María Gómez</option>
-                  <option>Carlos Rodríguez</option>
+                  <option>Hermin</option>
+                  <option>Natalia</option>
+                  <option>Jose</option>
                 </select>
               </div>
             </div>
@@ -249,12 +209,11 @@ import Layout from "../layouts/Layout.astro";
                       >
                     </tr>
                   </thead>
-                  <tbody>
-                    <!-- Filas de productos irían aquí -->
-                    <tr class="border-t border-gray-200">
-                      <td class="py-4 px-4 text-gray-500" colspan="7"
-                        >No hay productos agregados</td
-                      >
+                  <tbody id="tablaProductosPedido">
+                    <tr id="filaVacia" class="border-t border-gray-200">
+                      <td class="py-4 px-4 text-gray-500" colspan="7">
+                        No hay productos agregados
+                      </td>
                     </tr>
                   </tbody>
                 </table>
@@ -269,41 +228,12 @@ import Layout from "../layouts/Layout.astro";
                   Agregar Producto
                 </h3>
                 <div class="space-y-4">
-                  <div>
-                    <label
-                      class="text-gray-700 font-medium mb-2 flex items-center"
-                    >
-                      <span class="text-yellow-500 mr-2">■</span>
-                      Cantidad
-                    </label>
-                    <div class="flex items-center space-x-2">
-                      <input
-                        type="text"
-                        class="bg-white border border-gray-300 rounded-md px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        placeholder="0"
-                      />
-                      <input
-                        type="text"
-                        class="bg-white border border-gray-300 rounded-md px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        placeholder="Unidad"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label
-                      class="text-gray-700 font-medium mb-2 flex items-center"
-                    >
-                      <span class="text-yellow-500 mr-2">■</span>
-                      Total
-                    </label>
-                    <input
-                      type="text"
-                      class="bg-white border border-gray-300 rounded-md px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="$0.00"
-                    />
-                  </div>
-
+                  <button
+                    id="btnBuscarProductos"
+                    class="ml-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center"
+                  >
+                    <i class="fas fa-search mr-2"></i> Buscar Productos
+                  </button>
                   <div class="flex space-x-2 pt-2">
                     <button
                       class="bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-4 rounded-md font-medium flex items-center justify-center transition-colors flex-1"
@@ -486,286 +416,773 @@ import Layout from "../layouts/Layout.astro";
       </div>
     </div>
   </div>
-</Layout>
 
-<!-- Mantén todo el código anterior igual hasta el script -->
+  <!-- Modal de búsqueda de productos -->
+  <div
+    id="modalProductos"
+    class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center"
+  >
+    <div class="bg-white rounded-lg shadow-lg w-full max-w-3xl p-6 relative">
+      <button
+        id="cerrarModalProductos"
+        class="absolute top-2 right-2 text-gray-500 hover:text-red-600"
+      >
+        ✖
+      </button>
 
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const mesas = {
-      primerPiso: [1, 2, 3, 4, 5],
-      segundoPiso: [6, 7, 8, 9, 10, 11, 12, 13],
-      pasillo: [14, 15, 16, 17, 18, 19, 20],
-      domicilios: Array.from({ length: 20 }, (_, i) => i + 1),
-      barra: ["BARRA"],
-    };
+      <h2 class="text-xl font-bold mb-4 text-blue-800">Buscar Productos</h2>
 
-    const container = document.getElementById("mesasContainer");
-    const tableView = document.getElementById("tableView");
-    const orderView = document.getElementById("orderView");
-    const closeOrderBtn = document.getElementById("closeOrderBtn");
-    const trasladarSelect = document.querySelector("#orderView select"); // Select para trasladar
+      <input
+        id="inputBuscarProducto"
+        type="text"
+        placeholder="Buscar por nombre o descripción..."
+        class="w-full border border-gray-300 rounded-md px-4 py-2 mb-4 focus:ring-2 focus:ring-blue-500"
+      />
 
-    // Objeto para almacenar el estado de las mesas
-    const mesasState = {};
+      <div id="resultadoProductos" class="overflow-y-auto max-h-96">
+        <!-- Aquí se carga la tabla con JS -->
+      </div>
+    </div>
+  </div>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const btnBuscar = document.getElementById("btnBuscarProductos");
+      const resultado = document.getElementById("resultadoProductos");
+      const modal = document.getElementById("modalProductos");
+      const cerrarModal = document.getElementById("cerrarModalProductos");
+      const inputBuscar = document.getElementById("inputBuscarProducto");
+      const tablaProductosPedido = document.getElementById(
+        "tablaProductosPedido"
+      );
+      const filaVacia = document.getElementById("filaVacia");
 
-    // Función para formatear fecha
-    function formatDate(date) {
-      return date.toLocaleString("es-ES", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-      });
-    }
+      let productos = [];
+      let mesaActual = null; // Almacenará la mesa actualmente seleccionada
+      let contadorItems = 0; // Contador para IDs únicos de items
 
-    // Función para calcular tiempo transcurrido
-    function calculateElapsedTime(startTime) {
-      const now = new Date();
-      const diff = now - startTime;
+      // Objeto para almacenar los pedidos por mesa
+      const pedidosPorMesa = {};
 
-      const hours = Math.floor(diff / (1000 * 60 * 60));
-      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-
-      return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
-    }
-
-    // Función para cambiar entre vistas
-    function showTableView() {
-      tableView.classList.remove("hidden");
-      orderView.classList.add("hidden");
-    }
-
-    function showOrderView(mesaId) {
-      tableView.classList.add("hidden");
-      orderView.classList.remove("hidden");
-
-      // Actualizar el título del pedido
-      const pedidoTitle = orderView.querySelector("h2");
-      if (pedidoTitle) {
-        pedidoTitle.textContent = `PEDIDO ${mesaId}`;
+      // Función para obtener el pedido actual
+      function obtenerPedidoActual() {
+        if (!mesaActual) return [];
+        if (!pedidosPorMesa[mesaActual]) {
+          pedidosPorMesa[mesaActual] = [];
+        }
+        return pedidosPorMesa[mesaActual];
       }
 
-      // Actualizar opciones de "Trasladar a"
-      updateTrasladarOptions(mesaId);
-    }
+      // Función para actualizar el total
+      function actualizarTotal() {
+        const pedidoActual = obtenerPedidoActual();
+        const total = pedidoActual.reduce(
+          (sum, item) => sum + item.precio * item.cantidad,
+          0
+        );
+        const totalElement = document.querySelector(".text-4xl");
+        if (totalElement) {
+          totalElement.textContent = `$${total.toLocaleString()}`;
+        }
+      }
 
-    // Función para actualizar las opciones de trasladar
-    function updateTrasladarOptions(currentMesaId) {
-      // Limpiar opciones actuales
-      trasladarSelect.innerHTML =
-        '<option value="">Seleccione una mesa</option>';
+      // Función para renderizar la tabla de pedidos
+      function renderizarTablaPedido() {
+        const pedidoActual = obtenerPedidoActual();
 
-      // Obtener todas las mesas disponibles (excepto la actual)
-      const disponibles = [];
+        // Limpiar tabla
+        tablaProductosPedido.innerHTML = "";
 
-      // Revisar todas las áreas
-      Object.keys(mesas).forEach((area) => {
-        mesas[area].forEach((numMesa) => {
-          const mesaId =
-            area === "barra"
-              ? "BARRA"
-              : area === "domicilios"
-                ? `DOMICILIO ${numMesa}`
-                : `MESA ${numMesa}`;
+        if (pedidoActual.length === 0) {
+          tablaProductosPedido.appendChild(filaVacia);
+          actualizarTotal();
+          return;
+        }
 
-          // Solo agregar si no es la mesa actual y está disponible
-          if (
-            mesaId !== currentMesaId &&
-            (!mesasState[mesaId] || mesasState[mesaId].estado !== "ocupada")
-          ) {
-            disponibles.push(mesaId);
+        // Agregar cada producto del pedido
+        pedidoActual.forEach((item, index) => {
+          const fila = document.createElement("tr");
+          fila.className = "border-t border-gray-200";
+          fila.innerHTML = `
+        <td class="py-3 px-4">${item.id}</td>
+        <td class="py-3 px-4">${item.nombre}</td>
+        <td class="py-3 px-4">${item.detalle || "-"}</td>
+        <td class="py-3 px-4">
+          <div class="flex items-center space-x-2">
+            <button onclick="cambiarCantidad(${index}, -1)" class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">-</button>
+            <span class="px-3 py-1 bg-gray-100 rounded min-w-[40px] text-center">${item.cantidad}</span>
+            <button onclick="cambiarCantidad(${index}, 1)" class="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600">+</button>
+          </div>
+        </td>
+        <td class="py-3 px-4">$${item.precio.toLocaleString()}</td>
+        <td class="py-3 px-4 font-semibold">$${(item.precio * item.cantidad).toLocaleString()}</td>
+        <td class="py-3 px-4">
+          <button onclick="eliminarProducto(${index})" class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" clip-rule="evenodd"></path>
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 5.707 7.293a1 1 0 00-1.414 1.414L7.586 12l-3.293 3.293a1 1 0 101.414 1.414L9 13.414l3.293 3.293a1 1 0 001.414-1.414L10.414 12l3.293-3.293z" clip-rule="evenodd"></path>
+            </svg>
+            Eliminar
+          </button>
+        </td>
+      `;
+          tablaProductosPedido.appendChild(fila);
+        });
+
+        actualizarTotal();
+      }
+
+      // Función para agregar producto al pedido (llamada desde el modal)
+      window.agregarProductoAlPedido = function (
+        idProducto,
+        nombreProducto,
+        precioProducto
+      ) {
+        if (!mesaActual) return;
+
+        const pedidoActual = obtenerPedidoActual();
+
+        // Verificar si el producto ya existe en el pedido
+        const productoExistente = pedidoActual.find(
+          (item) => item.id === idProducto
+        );
+
+        if (productoExistente) {
+          // Si existe, aumentar cantidad
+          productoExistente.cantidad += 1;
+        } else {
+          // Si no existe, agregarlo
+          pedidoActual.push({
+            id: idProducto,
+            nombre: nombreProducto,
+            precio: precioProducto,
+            cantidad: 1,
+            detalle: "",
+            itemId: ++contadorItems,
+          });
+        }
+
+        renderizarTablaPedido();
+
+        // Cerrar modal después de agregar
+        modal.classList.add("hidden");
+        resultado.innerHTML = "";
+        inputBuscar.value = "";
+
+        // Mostrar mensaje de confirmación
+        mostrarNotificacion(
+          `${nombreProducto} agregado al pedido de ${mesaActual}`,
+          "success"
+        );
+      };
+
+      // Función para cambiar cantidad
+      window.cambiarCantidad = function (index, cambio) {
+        const pedidoActual = obtenerPedidoActual();
+        if (pedidoActual[index]) {
+          pedidoActual[index].cantidad += cambio;
+
+          // Si la cantidad llega a 0, eliminar el producto
+          if (pedidoActual[index].cantidad <= 0) {
+            pedidoActual.splice(index, 1);
+          }
+
+          renderizarTablaPedido();
+        }
+      };
+
+      // Función para eliminar producto
+      window.eliminarProducto = function (index) {
+        const pedidoActual = obtenerPedidoActual();
+        if (confirm("¿Está seguro de eliminar este producto del pedido?")) {
+          const producto = pedidoActual[index];
+          pedidoActual.splice(index, 1);
+          renderizarTablaPedido();
+          mostrarNotificacion(
+            `${producto.nombre} eliminado del pedido de ${mesaActual}`,
+            "warning"
+          );
+        }
+      };
+
+      // Función para mostrar notificaciones
+      function mostrarNotificacion(mensaje, tipo = "info") {
+        const notificacion = document.createElement("div");
+        notificacion.className = `fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg z-50 transition-all duration-300 ${
+          tipo === "success"
+            ? "bg-green-500 text-white"
+            : tipo === "warning"
+              ? "bg-yellow-500 text-white"
+              : tipo === "error"
+                ? "bg-red-500 text-white"
+                : "bg-blue-500 text-white"
+        }`;
+        notificacion.textContent = mensaje;
+
+        document.body.appendChild(notificacion);
+
+        // Remover después de 3 segundos
+        setTimeout(() => {
+          notificacion.style.opacity = "0";
+          setTimeout(() => {
+            document.body.removeChild(notificacion);
+          }, 300);
+        }, 3000);
+      }
+
+      // Función para aplicar descuento
+      const inputDescuento = document.querySelector('input[placeholder="0"]');
+      const inputValorDescuento = document.querySelector(
+        'input[placeholder="$0.00"]'
+      );
+
+      if (inputDescuento) {
+        inputDescuento.addEventListener("input", function () {
+          const pedidoActual = obtenerPedidoActual();
+          const porcentaje = parseFloat(this.value) || 0;
+          const subtotal = pedidoActual.reduce(
+            (sum, item) => sum + item.precio * item.cantidad,
+            0
+          );
+          const valorDescuento = (subtotal * porcentaje) / 100;
+
+          if (inputValorDescuento) {
+            inputValorDescuento.value = `$${valorDescuento.toLocaleString()}`;
+          }
+
+          // Actualizar total con descuento
+          const totalConDescuento = subtotal - valorDescuento;
+          const totalElement = document.querySelector(".text-4xl");
+          if (totalElement) {
+            totalElement.textContent = `$${totalConDescuento.toLocaleString()}`;
           }
         });
-      });
-
-      // Ordenar mesas numéricamente
-      disponibles.sort((a, b) => {
-        const numA = parseInt(a.replace(/\D/g, "")) || 0;
-        const numB = parseInt(b.replace(/\D/g, "")) || 0;
-        return numA - numB;
-      });
-
-      // Agregar opciones al select
-      disponibles.forEach((mesa) => {
-        const option = document.createElement("option");
-        option.value = mesa;
-        option.textContent = mesa;
-        trasladarSelect.appendChild(option);
-      });
-
-      // Agregar evento para trasladar
-      trasladarSelect.addEventListener("change", function () {
-        if (this.value) {
-          if (confirm(`¿Desea trasladar los productos a ${this.value}?`)) {
-            // Aquí iría la lógica para trasladar los productos
-            alert(`Productos trasladados a ${this.value}`);
-            this.value = ""; // Resetear el select
-          }
-        }
-      });
-    }
-
-    // Función para actualizar el estado de una mesa
-    function updateMesaState(mesaId, estado) {
-      if (estado === "ocupada") {
-        mesasState[mesaId] = {
-          estado: "ocupada",
-          fechaApertura: new Date(),
-          startTime: new Date(),
-        };
-      } else {
-        delete mesasState[mesaId];
       }
-    }
 
-    // Función para renderizar mesas
-    function renderMesas(mesasArray, tipo) {
-      container.innerHTML = "";
-
-      const fragment = document.createDocumentFragment();
-
-      mesasArray.forEach((numMesa) => {
-        const esBarra = tipo === "barra";
-        const esDomicilio = tipo === "domicilios";
-
-        const mesaId = esBarra
-          ? "BARRA"
-          : esDomicilio
-            ? `DOMICILIO ${numMesa}`
-            : `MESA ${numMesa}`;
-
-        const mesaData = mesasState[mesaId];
-        const isOcupada = mesaData && mesaData.estado === "ocupada";
-
-        // Determinar colores según estado
-        const estadoColor = isOcupada ? "bg-red-500" : "bg-green-500";
-        const cardColor = isOcupada ? "bg-red-50" : "bg-white";
-
-        const mesaDiv = document.createElement("div");
-        mesaDiv.className = `${cardColor} rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow`;
-
-        mesaDiv.innerHTML = `
-          <div class="${estadoColor} py-2">
-            <div class="text-center font-bold text-white">${isOcupada ? "OCUPADO" : "DISPONIBLE"}</div>
-          </div>
-          <div class="text-center font-bold text-xl py-2 ${isOcupada ? "bg-red-100" : "bg-green-100"}">${mesaId}</div>
-          <div class="p-4 space-y-3">
-            <div class="flex justify-between items-center border-b pb-2">
-              <div class="text-sm font-medium text-gray-600">Hora:</div>
-              <div class="text-sm text-gray-800">${isOcupada ? formatDate(mesaData.fechaApertura).split(",")[1].trim() : "-"}</div>
-            </div>
-            <div class="flex justify-between items-center border-b pb-2">
-              <div class="text-sm font-medium text-gray-600">Tiempo:</div>
-              <div class="text-sm text-gray-800">${isOcupada ? calculateElapsedTime(mesaData.startTime) : "-"}</div>
-            </div>
-            <div class="flex justify-between items-center border-b pb-2">
-              <div class="text-sm font-medium text-gray-600">Fecha:</div>
-              <div class="text-sm text-gray-800">${isOcupada ? formatDate(mesaData.fechaApertura).split(",")[0] : "-"}</div>
-            </div>
-            <div class="flex justify-between items-center border-b pb-2">
-              <div class="text-sm font-medium text-gray-600">Valor:</div>
-              <div class="text-sm text-gray-800">-</div>
-            </div>
-            <div class="flex justify-between items-center border-b pb-2">
-              <div class="text-sm font-medium text-gray-600">Detalle:</div>
-              <div class="text-sm text-gray-800">-</div>
-            </div>
-          </div>
-          <div class="px-4 pb-4">
-            <button class="open-mesa-btn ${isOcupada ? "bg-red-600 hover:bg-red-700" : "bg-blue-600 hover:bg-blue-700"} text-white py-2 px-2 w-full rounded-md text-center font-medium flex items-center justify-center transition-colors" data-mesa="${mesaId}">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"></path>
-              </svg>
-              ${isOcupada ? "VER PEDIDO" : esBarra ? "ABRIR BARRA" : esDomicilio ? "ABRIR DOMICILIO" : "ABRIR MESA"}
-            </button>
-          </div>
-        `;
-        fragment.appendChild(mesaDiv);
-      });
-
-      container.appendChild(fragment);
-    }
-
-    // Mostrar mesas del primer piso por defecto
-    renderMesas(mesas.primerPiso, "primerPiso");
-
-    // Manejar clic en cualquier botón de abrir mesa/domicilio/barra
-    container.addEventListener("click", (e) => {
-      if (e.target.closest(".open-mesa-btn")) {
-        const mesaId = e.target.closest(".open-mesa-btn").dataset.mesa;
-
-        // Si la mesa no está ocupada, marcarla como ocupada
-        if (!mesasState[mesaId] || mesasState[mesaId].estado !== "ocupada") {
-          updateMesaState(mesaId, "ocupada");
-
-          // Volver a renderizar las mesas para actualizar el estado
-          const activeTab = document.querySelector(".bg-red-600");
-          if (activeTab) {
-            const tabId = activeTab.id;
-            const tipo = Object.keys(tabs).find((key) => key === tabId);
-            renderMesas(tabs[tabId].mesas, tabs[tabId].tipo);
-          }
+      // Mostrar modal y cargar productos
+      btnBuscar.addEventListener("click", async () => {
+        if (!mesaActual) {
+          mostrarNotificacion("Seleccione una mesa primero", "warning");
+          return;
         }
 
-        showOrderView(mesaId);
+        modal.classList.remove("hidden");
+        modal.classList.add("flex"); // Agregar clase flex para centrar
+        resultado.innerHTML =
+          '<p class="text-gray-500">Cargando productos...</p>';
+
+        try {
+          const response = await fetch("/api/productos");
+          productos = await response.json();
+
+          if (productos.error) {
+            resultado.innerHTML = `<p class="text-red-500">${productos.error}</p>`;
+            return;
+          }
+
+          renderizarTabla(productos);
+        } catch (error) {
+          resultado.innerHTML = `<p class="text-red-500">Error al consultar productos</p>`;
+          console.error(error);
+        }
+      });
+
+      // Cerrar modal
+      cerrarModal.addEventListener("click", () => {
+        modal.classList.add("hidden");
+        modal.classList.remove("flex");
+        resultado.innerHTML = "";
+        inputBuscar.value = "";
+      });
+
+      // Cerrar modal al hacer clic fuera de él
+      modal.addEventListener("click", (e) => {
+        if (e.target === modal) {
+          modal.classList.add("hidden");
+          modal.classList.remove("flex");
+          resultado.innerHTML = "";
+          inputBuscar.value = "";
+        }
+      });
+
+      // Filtrar productos
+      inputBuscar.addEventListener("input", () => {
+        const texto = inputBuscar.value.toLowerCase();
+        const filtrados = productos.filter(
+          (p) =>
+            p.name.toLowerCase().includes(texto) ||
+            (p.description || "").toLowerCase().includes(texto)
+        );
+        renderizarTabla(filtrados);
+      });
+
+      // Renderizar tabla de productos en el modal
+      function renderizarTabla(lista) {
+        if (!lista.length) {
+          resultado.innerHTML =
+            '<p class="text-gray-500">No se encontraron productos.</p>';
+          return;
+        }
+
+        resultado.innerHTML = `
+      <table class="w-full mt-2 border border-gray-200">
+        <thead>
+          <tr class="bg-gray-100">
+            <th class="border border-gray-200 px-4 py-2 text-left">ID</th>
+            <th class="border border-gray-200 px-4 py-2 text-left">Nombre</th>
+            <th class="border border-gray-200 px-4 py-2 text-left">Precio</th>
+            <th class="border border-gray-200 px-4 py-2 text-left">Descripción</th>
+            <th class="border border-gray-200 px-4 py-2 text-center">Acción</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${lista
+            .map(
+              (p) => `
+            <tr class="hover:bg-gray-50">
+              <td class="border border-gray-200 px-4 py-2">${p.id}</td>
+              <td class="border border-gray-200 px-4 py-2 font-medium">${p.name}</td>
+              <td class="border border-gray-200 px-4 py-2 text-green-600 font-semibold">$${p.price.toLocaleString()}</td>
+              <td class="border border-gray-200 px-4 py-2 text-gray-600">${p.description || "-"}</td>
+              <td class="border border-gray-200 px-4 py-2 text-center">
+                <button
+                  onclick="agregarProductoAlPedido('${p.id}', '${p.name.replace(/'/g, "\\'")}', ${p.price})"
+                  class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition-colors flex items-center mx-auto"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"></path>
+                  </svg>
+                  Agregar
+                </button>
+              </td>
+            </tr>
+          `
+            )
+            .join("")}
+        </tbody>
+      </table>
+    `;
       }
-    });
 
-    // Manejar clic en el botón de cerrar pedido
-    if (closeOrderBtn) {
-      closeOrderBtn.addEventListener("click", showTableView);
-    }
+      // Función para limpiar pedido
+      window.limpiarPedido = function () {
+        if (confirm("¿Está seguro de limpiar todo el pedido?")) {
+          pedidosPorMesa[mesaActual] = [];
+          renderizarTablaPedido();
+          mostrarNotificacion(`Pedido de ${mesaActual} limpiado`, "info");
+        }
+      };
 
-    // Configuración de pestañas
-    const tabs = {
-      btnPrimerPiso: { mesas: mesas.primerPiso, tipo: "primerPiso" },
-      btnSegundoPiso: { mesas: mesas.segundoPiso, tipo: "segundoPiso" },
-      btnPasillo: { mesas: mesas.pasillo, tipo: "pasillo" },
-      btnDomicilios: { mesas: mesas.domicilios, tipo: "domicilios" },
-      btnF: { mesas: mesas.barra, tipo: "barra" },
-    };
+      // Función para facturar
+      const btnFacturar = document.querySelector(".bg-green-600");
+      if (btnFacturar) {
+        btnFacturar.addEventListener("click", async function () {
+          const pedidoActual = obtenerPedidoActual();
+          if (pedidoActual.length === 0) {
+            mostrarNotificacion("No hay productos en el pedido", "warning");
+            return;
+          }
 
-    // Configurar eventos de pestañas
-    Object.keys(tabs).forEach((tabId) => {
-      const tab = document.getElementById(tabId);
-      if (tab) {
-        tab.addEventListener("click", () => {
-          // Quitar la clase activa de todas las pestañas
-          Object.keys(tabs).forEach((id) => {
-            const element = document.getElementById(id);
-            if (element) {
-              element.classList.remove("bg-red-600", "hover:bg-red-700");
-              element.classList.add("hover:bg-blue-600");
+          if (confirm("¿Está seguro que desea facturar este pedido?")) {
+            try {
+              // Limpiar el pedido de la mesa actual
+              pedidosPorMesa[mesaActual] = [];
+
+              // Cambiar el estado de la mesa a disponible
+              updateMesaState(mesaActual, "disponible");
+
+              // Mostrar notificación de éxito
+              mostrarNotificacion(
+                `Pedido de ${mesaActual} facturado correctamente`,
+                "success"
+              );
+
+              // Volver a la vista de mesas
+              showTableView();
+
+              // Actualizar la vista de mesas
+              const activeTab = document.querySelector(".bg-red-600");
+              if (activeTab) {
+                const tabId = activeTab.id;
+                const tipo = Object.keys(tabs).find((key) => key === tabId);
+                renderMesas(tabs[tabId].mesas, tabs[tabId].tipo);
+              }
+            } catch (err) {
+              console.error(err);
+              mostrarNotificacion("Error al facturar el pedido", "error");
+            }
+          }
+        });
+      }
+
+      // Inicializar tabla vacía
+      renderizarTablaPedido();
+
+      // Configuración del sistema de mesas
+      const mesas = {
+        primerPiso: [1, 2, 3, 4, 5],
+        segundoPiso: [6, 7, 8, 9, 10, 11, 12, 13],
+        pasillo: [14, 15, 16, 17, 18, 19, 20],
+        domicilios: Array.from({ length: 20 }, (_, i) => i + 1),
+        barra: ["BARRA"],
+      };
+
+      const container = document.getElementById("mesasContainer");
+      const tableView = document.getElementById("tableView");
+      const orderView = document.getElementById("orderView");
+      const closeOrderBtn = document.getElementById("closeOrderBtn");
+      const trasladarSelect = document.querySelector("#orderView select"); // Select para trasladar
+
+      // Objeto para almacenar el estado de las mesas
+      const mesasState = {};
+
+      // Función para formatear fecha
+      function formatDate(date) {
+        return date.toLocaleString("es-ES", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+      }
+
+      // Función para calcular tiempo transcurrido
+      function calculateElapsedTime(startTime) {
+        const now = new Date();
+        const diff = now - startTime;
+
+        const hours = Math.floor(diff / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+
+        return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
+      }
+
+      // Función para cambiar entre vistas
+      function showTableView() {
+        tableView.classList.remove("hidden");
+        orderView.classList.add("hidden");
+        mesaActual = null; // Limpiar mesa actual
+      }
+
+      function showOrderView(mesaId) {
+        mesaActual = mesaId; // Establecer la mesa actual
+
+        tableView.classList.add("hidden");
+        orderView.classList.remove("hidden");
+
+        // Actualizar el título del pedido
+        const pedidoTitle = orderView.querySelector("h2");
+        if (pedidoTitle) {
+          pedidoTitle.textContent = `PEDIDO ${mesaId}`;
+        }
+
+        // Actualizar opciones de "Trasladar a"
+        updateTrasladarOptions(mesaId);
+
+        // Renderizar los productos de esta mesa
+        renderizarTablaPedido();
+      }
+
+      // Función para actualizar las opciones de trasladar
+      function updateTrasladarOptions(currentMesaId) {
+        // Limpiar opciones actuales
+        trasladarSelect.innerHTML =
+          '<option value="">Seleccione una mesa</option>';
+
+        // Obtener todas las mesas disponibles (excepto la actual)
+        const disponibles = [];
+
+        // Revisar todas las áreas
+        Object.keys(mesas).forEach((area) => {
+          mesas[area].forEach((numMesa) => {
+            const mesaId =
+              area === "barra"
+                ? "BARRA"
+                : area === "domicilios"
+                  ? `DOMICILIO ${numMesa}`
+                  : `MESA ${numMesa}`;
+
+            // Solo agregar si no es la mesa actual y está disponible
+            if (
+              mesaId !== currentMesaId &&
+              (!mesasState[mesaId] || mesasState[mesaId].estado !== "ocupada")
+            ) {
+              disponibles.push(mesaId);
             }
           });
+        });
 
-          // Agregar la clase activa a la pestaña seleccionada
-          tab.classList.add("bg-red-600", "hover:bg-red-700");
-          tab.classList.remove("hover:bg-blue-600");
+        // Ordenar mesas numéricamente
+        disponibles.sort((a, b) => {
+          const numA = parseInt(a.replace(/\D/g, "")) || 0;
+          const numB = parseInt(b.replace(/\D/g, "")) || 0;
+          return numA - numB;
+        });
 
-          // Mostrar las mesas correspondientes
-          renderMesas(tabs[tabId].mesas, tabs[tabId].tipo);
+        // Agregar opciones al select
+        disponibles.forEach((mesa) => {
+          const option = document.createElement("option");
+          option.value = mesa;
+          option.textContent = mesa;
+          trasladarSelect.appendChild(option);
+        });
+
+        // Agregar evento para trasladar
+        trasladarSelect.addEventListener("change", function () {
+          if (this.value) {
+            if (confirm(`¿Desea trasladar los productos a ${this.value}?`)) {
+              // Trasladar los productos a la nueva mesa
+              if (pedidosPorMesa[mesaActual]) {
+                if (!pedidosPorMesa[this.value]) {
+                  pedidosPorMesa[this.value] = [];
+                }
+
+                // Mover los productos
+                pedidosPorMesa[this.value] = pedidosPorMesa[this.value].concat(
+                  pedidosPorMesa[mesaActual]
+                );
+                pedidosPorMesa[mesaActual] = [];
+
+                // Actualizar la vista
+                renderizarTablaPedido();
+                mostrarNotificacion(
+                  `Productos trasladados a ${this.value}`,
+                  "success"
+                );
+
+                // Actualizar el estado de las mesas
+                updateMesaState(mesaActual, "disponible");
+                updateMesaState(this.value, "ocupada");
+                // Cerrar el pedido actual
+                showTableView();
+              }
+              this.value = ""; // Resetear el select
+            }
+          }
         });
       }
-    });
 
-    // Activar la primera pestaña por defecto
-    const primerPisoTab = document.getElementById("btnPrimerPiso");
-    if (primerPisoTab) {
-      primerPisoTab.classList.add("bg-red-600", "hover:bg-red-700");
-      primerPisoTab.classList.remove("hover:bg-blue-600");
-    }
-
-    // Actualizar tiempos cada minuto
-    setInterval(() => {
-      const activeTab = document.querySelector(".bg-red-600");
-      if (activeTab) {
-        const tabId = activeTab.id;
-        const tipo = Object.keys(tabs).find((key) => key === tabId);
-        renderMesas(tabs[tabId].mesas, tabs[tabId].tipo);
+      // Función para actualizar el estado de una mesa
+      function updateMesaState(mesaId, estado) {
+        if (estado === "ocupada") {
+          mesasState[mesaId] = {
+            estado: "ocupada",
+            fechaApertura: new Date(),
+            startTime: new Date(),
+          };
+        } else {
+          delete mesasState[mesaId];
+        }
       }
-    }, 60000); // Actualizar cada minuto
-  });
-</script>
+
+      // Función para renderizar mesas
+      function renderMesas(mesasArray, tipo) {
+        container.innerHTML = "";
+
+        const fragment = document.createDocumentFragment();
+
+        mesasArray.forEach((numMesa) => {
+          const esBarra = tipo === "barra";
+          const esDomicilio = tipo === "domicilios";
+
+          const mesaId = esBarra
+            ? "BARRA"
+            : esDomicilio
+              ? `DOMICILIO ${numMesa}`
+              : `MESA ${numMesa}`;
+
+          const mesaData = mesasState[mesaId];
+          const isOcupada = mesaData && mesaData.estado === "ocupada";
+
+          // Determinar colores según estado
+          const estadoColor = isOcupada ? "bg-red-500" : "bg-green-500";
+          const cardColor = isOcupada ? "bg-red-50" : "bg-white";
+
+          const mesaDiv = document.createElement("div");
+          mesaDiv.className = `${cardColor} rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow`;
+
+          mesaDiv.innerHTML = `
+      <div class="${estadoColor} py-2">
+        <div class="text-center font-bold text-white">${isOcupada ? "OCUPADO" : "DISPONIBLE"}</div>
+      </div>
+      <div class="text-center font-bold text-xl py-2 ${isOcupada ? "bg-red-100" : "bg-green-100"}">${mesaId}</div>
+      <div class="p-4 space-y-3">
+        <div class="flex justify-between items-center border-b pb-2">
+          <div class="text-sm font-medium text-gray-600">Hora:</div>
+          <div class="text-sm text-gray-800">${isOcupada ? formatDate(mesaData.fechaApertura).split(",")[1].trim() : "-"}</div>
+        </div>
+        <div class="flex justify-between items-center border-b pb-2">
+          <div class="text-sm font-medium text-gray-600">Tiempo:</div>
+          <div class="text-sm text-gray-800">${isOcupada ? calculateElapsedTime(mesaData.startTime) : "-"}</div>
+        </div>
+        <div class="flex justify-between items-center border-b pb-2">
+          <div class="text-sm font-medium text-gray-600">Fecha:</div>
+          <div class="text-sm text-gray-800">${isOcupada ? formatDate(mesaData.fechaApertura).split(",")[0] : "-"}</div>
+        </div>
+        <div class="flex justify-between items-center border-b pb-2">
+          <div class="text-sm font-medium text-gray-600">Valor:</div>
+          <div class="text-sm text-gray-800">-</div>
+        </div>
+        <div class="flex justify-between items-center border-b pb-2">
+          <div class="text-sm font-medium text-gray-600">Detalle:</div>
+          <div class="text-sm text-gray-800">-</div>
+        </div>
+      </div>
+      <div class="px-4 pb-4">
+        <button class="open-mesa-btn ${isOcupada ? "bg-red-600 hover:bg-red-700" : "bg-blue-600 hover:bg-blue-700"} text-white py-2 px-2 w-full rounded-md text-center font-medium flex items-center justify-center transition-colors" data-mesa="${mesaId}">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"></path>
+          </svg>
+          ${isOcupada ? "VER PEDIDO" : esBarra ? "ABRIR BARRA" : esDomicilio ? "ABRIR DOMICILIO" : "ABRIR MESA"}
+        </button>
+      </div>
+      ${
+        isOcupada
+          ? `
+        <div class="px-4 pb-4">
+          <button class="delete-mesa-btn bg-red-600 hover:bg-red-700 text-white py-2 px-2 w-full rounded-md text-center font-medium flex items-center justify-center transition-colors" data-mesa="${mesaId}">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" clip-rule="evenodd"></path>
+              <path fill-rule="evenodd" d="M4 8a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1z" clip-rule="evenodd"></path>
+            </svg>
+            BORRAR PEDIDO
+          </button>
+        </div>
+      `
+          : ""
+      }
+    `;
+          fragment.appendChild(mesaDiv);
+        });
+
+        container.appendChild(fragment);
+      }
+
+      // Mostrar mesas del primer piso por defecto
+      renderMesas(mesas.primerPiso, "primerPiso");
+
+      // Manejar clic en cualquier botón de abrir mesa/domicilio/barra
+      container.addEventListener("click", (e) => {
+        if (e.target.closest(".open-mesa-btn")) {
+          const mesaId = e.target.closest(".open-mesa-btn").dataset.mesa;
+
+          // Si la mesa no está ocupada, marcarla como ocupada
+          if (!mesasState[mesaId] || mesasState[mesaId].estado !== "ocupada") {
+            updateMesaState(mesaId, "ocupada");
+
+            // Volver a renderizar las mesas para actualizar el estado
+            const activeTab = document.querySelector(".bg-red-600");
+            if (activeTab) {
+              const tabId = activeTab.id;
+              const tipo = Object.keys(tabs).find((key) => key === tabId);
+              renderMesas(tabs[tabId].mesas, tabs[tabId].tipo);
+            }
+          }
+
+          showOrderView(mesaId);
+        }
+      });
+
+      // Manejar clic en el botón de eliminar mesa
+      container.addEventListener("click", (e) => {
+        if (e.target.closest(".delete-mesa-btn")) {
+          const mesaId = e.target.closest(".delete-mesa-btn").dataset.mesa;
+          const isOcupada =
+            mesasState[mesaId] && mesasState[mesaId].estado === "ocupada";
+
+          if (isOcupada) {
+            if (
+              confirm(
+                `¿Está seguro que desea eliminar el pedido de ${mesaId} y marcarla como disponible?`
+              )
+            ) {
+              // Eliminar el pedido de la mesa
+              if (pedidosPorMesa[mesaId]) {
+                delete pedidosPorMesa[mesaId];
+              }
+
+              // Cambiar el estado de la mesa a disponible
+              updateMesaState(mesaId, "disponible");
+
+              // Mostrar notificación
+              mostrarNotificacion(
+                `Pedido de ${mesaId} eliminado y mesa marcada como disponible`,
+                "success"
+              );
+
+              // Si estamos viendo esta mesa en orderView, volver a tableView
+              if (mesaActual === mesaId) {
+                showTableView();
+              }
+
+              // Actualizar la vista de mesas
+              const activeTab = document.querySelector(".bg-red-600");
+              if (activeTab) {
+                const tabId = activeTab.id;
+                const tipo = Object.keys(tabs).find((key) => key === tabId);
+                renderMesas(tabs[tabId].mesas, tabs[tabId].tipo);
+              }
+            }
+          } else {
+            mostrarNotificacion(`La ${mesaId} ya está disponible`, "info");
+          }
+        }
+      });
+
+      // Manejar clic en el botón de cerrar pedido
+      if (closeOrderBtn) {
+        closeOrderBtn.addEventListener("click", showTableView);
+      }
+
+      // Configuración de pestañas
+      const tabs = {
+        btnPrimerPiso: { mesas: mesas.primerPiso, tipo: "primerPiso" },
+        btnSegundoPiso: { mesas: mesas.segundoPiso, tipo: "segundoPiso" },
+        btnPasillo: { mesas: mesas.pasillo, tipo: "pasillo" },
+        btnDomicilios: { mesas: mesas.domicilios, tipo: "domicilios" },
+        btnF: { mesas: mesas.barra, tipo: "barra" },
+      };
+
+      // Configurar eventos de pestañas
+      Object.keys(tabs).forEach((tabId) => {
+        const tab = document.getElementById(tabId);
+        if (tab) {
+          tab.addEventListener("click", () => {
+            // Quitar la clase activa de todas las pestañas
+            Object.keys(tabs).forEach((id) => {
+              const element = document.getElementById(id);
+              if (element) {
+                element.classList.remove("bg-red-600", "hover:bg-red-700");
+                element.classList.add("hover:bg-blue-600");
+              }
+            });
+
+            // Agregar la clase activa a la pestaña seleccionada
+            tab.classList.add("bg-red-600", "hover:bg-red-700");
+            tab.classList.remove("hover:bg-blue-600");
+
+            // Mostrar las mesas correspondientes
+            renderMesas(tabs[tabId].mesas, tabs[tabId].tipo);
+          });
+        }
+      });
+
+      // Activar la primera pestaña por defecto
+      const primerPisoTab = document.getElementById("btnPrimerPiso");
+      if (primerPisoTab) {
+        primerPisoTab.classList.add("bg-red-600", "hover:bg-red-700");
+        primerPisoTab.classList.remove("hover:bg-blue-600");
+      }
+
+      // Actualizar tiempos cada minuto
+      setInterval(() => {
+        const activeTab = document.querySelector(".bg-red-600");
+        if (activeTab) {
+          const tabId = activeTab.id;
+          const tipo = Object.keys(tabs).find((key) => key === tabId);
+          renderMesas(tabs[tabId].mesas, tabs[tabId].tipo);
+        }
+      }, 60000); // Actualizar cada minuto
+    });
+  </script>
+</Layout>

@@ -26,20 +26,6 @@ import Layout from "../layouts/Layout.astro";
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1"
-              >Empleado</label
-            >
-            <select
-              id="staffFilter"
-              class="w-full border border-gray-300 rounded px-3 py-2"
-            >
-              <option value="">Todos</option>
-              <option value="María García">María García</option>
-              <option value="Juan Pérez">Juan Pérez</option>
-              <option value="Ana López">Ana López</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1"
               >Motivo</label
             >
             <select
@@ -52,7 +38,7 @@ import Layout from "../layouts/Layout.astro";
               <option value="Sistema">Error del sistema</option>
             </select>
           </div>
-          <div class="flex items-end">
+          <div class="flex items-end md:col-span-2">
             <button
               onclick="applyFilters()"
               class="w-full bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
@@ -64,10 +50,10 @@ import Layout from "../layouts/Layout.astro";
       </div>
 
       <!-- Resumen -->
-      <div class="grid grid-cols-1 md:grid-cols-1 gap-4 mb-6">
+      <div class="grid grid-cols-1 gap-4 mb-6">
         <div class="bg-white p-4 rounded-lg shadow">
           <h3 class="text-sm font-medium text-gray-500">Facturas Anuladas</h3>
-          <p class="text-2xl font-bold text-gray-900">8</p>
+          <p id="summaryCount" class="text-2xl font-bold text-gray-900">0</p>
         </div>
       </div>
 
@@ -76,7 +62,6 @@ import Layout from "../layouts/Layout.astro";
         <div class="px-4 py-3 border-b border-gray-200">
           <h3 class="text-lg font-medium text-gray-900">Facturas Anuladas</h3>
         </div>
-
         <div class="overflow-x-auto">
           <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
@@ -88,14 +73,6 @@ import Layout from "../layouts/Layout.astro";
                 <th
                   class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase"
                   >Fecha/Hora</th
-                >
-                <th
-                  class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase"
-                  >Empleado</th
-                >
-                <th
-                  class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase"
-                  >Mesa</th
                 >
                 <th
                   class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase"
@@ -111,127 +88,61 @@ import Layout from "../layouts/Layout.astro";
                 >
               </tr>
             </thead>
-            <tbody id="canceledTable" class="bg-white divide-y divide-gray-200">
-              <!-- Datos se cargan aquí -->
-            </tbody>
+            <tbody id="canceledTable" class="bg-white divide-y divide-gray-200"
+            ></tbody>
           </table>
         </div>
       </div>
     </div>
 
     <script>
-      // Datos de ejemplo
-      const canceledOrders = [
-        {
-          id: 1005,
-          date: "2025-05-28",
-          time: "14:30",
-          total: 45000,
-          employee: "María García",
-          table: "Mesa 3",
-          reason: "Cliente",
-        },
-        {
-          id: 1012,
-          date: "2025-05-28",
-          time: "15:15",
-          total: 28000,
-          employee: "Juan Pérez",
-          table: "Mesa 7",
-          reason: "Cocina",
-        },
-        {
-          id: 1018,
-          date: "2025-05-28",
-          time: "16:20",
-          total: 67000,
-          employee: "Ana López",
-          table: "Para llevar",
-          reason: "Sistema",
-        },
-        {
-          id: 1025,
-          date: "2025-05-28",
-          time: "17:10",
-          total: 35.9,
-          employee: "María García",
-          table: "Mesa 2",
-          reason: "Cliente",
-        },
-        {
-          id: 1031,
-          date: "2025-05-28",
-          time: "18:45",
-          total: 52.3,
-          employee: "Juan Pérez",
-          table: "Mesa 5",
-          reason: "Cocina",
-        },
-        {
-          id: 1038,
-          date: "2025-05-28",
-          time: "19:20",
-          total: 22.85,
-          employee: "Ana López",
-          table: "Mesa 1",
-          reason: "Sistema",
-        },
-        {
-          id: 1045,
-          date: "2025-05-28",
-          time: "20:05",
-          total: 41.6,
-          employee: "María García",
-          table: "Mesa 4",
-          reason: "Cliente",
-        },
-        {
-          id: 1052,
-          date: "2025-05-28",
-          time: "20:30",
-          total: 31.4,
-          employee: "Juan Pérez",
-          table: "Mesa 8",
-          reason: "Cocina",
-        },
-      ];
-
-      // Inicializar fecha actual
       document.getElementById("dateFilter").value = new Date()
         .toISOString()
         .split("T")[0];
 
-      // Cargar tabla
-      function loadTable() {
-        const tbody = document.getElementById("canceledTable");
-        tbody.innerHTML = "";
+      async function fetchCanceledOrders(filters = {}) {
+        const params = new URLSearchParams(filters);
+        const res = await fetch("/api/canceled?" + params);
+        if (!res.ok) throw new Error("Error al cargar anulaciones");
+        return res.json();
+      }
 
-        canceledOrders.forEach((order) => {
-          const row = document.createElement("tr");
-          row.className = "hover:bg-gray-50";
+      async function loadTable() {
+        try {
+          const filters = {
+            date: document.getElementById("dateFilter").value,
+            reason: document.getElementById("reasonFilter").value,
+          };
+          const data = await fetchCanceledOrders(filters);
+          const tbody = document.getElementById("canceledTable");
+          tbody.innerHTML = "";
 
-          row.innerHTML = `
-                    <td class="px-4 py-3 text-sm font-medium text-gray-900">#${order.id}</td>
-                    <td class="px-4 py-3 text-sm text-gray-500">
-                        ${order.date}<br>
-                        <span class="text-xs text-gray-400">${order.time}</span>
-                    </td>
-                    <td class="px-4 py-3 text-sm text-gray-500">${order.employee}</td>
-                    <td class="px-4 py-3 text-sm text-gray-500">${order.table}</td>
-                    <td class="px-4 py-3 text-sm font-medium text-gray-900">$${order.total.toFixed(2)}</td>
-                    <td class="px-4 py-3 text-sm">
-                        <span class="px-2 py-1 text-xs font-medium rounded-full ${getReasonColor(order.reason)}">
-                            ${order.reason}
-                        </span>
-                    </td>
-                    <td class="px-4 py-3 text-sm">
-                        <button onclick="viewOrder(${order.id})" class="text-blue-600 hover:text-blue-800 mr-2">Ver</button>
-                        <button onclick="printOrder(${order.id})" class="text-gray-600 hover:text-gray-800">Imprimir</button>
-                    </td>
-                `;
+          data.forEach((order) => {
+            const time = new Date(order.cancelled_at).toLocaleTimeString();
+            const row = document.createElement("tr");
+            row.className = "hover:bg-gray-50";
+            row.innerHTML = `
+              <td class="px-4 py-3 text-sm font-medium text-gray-900">#${order.id}</td>
+              <td class="px-4 py-3 text-sm text-gray-500">
+                ${order.date}<br><span class="text-xs text-gray-400">${time}</span>
+              </td>
+              <td class="px-4 py-3 text-sm font-medium text-gray-900">$${Number(order.total).toFixed(2)}</td>
+              <td class="px-4 py-3 text-sm">
+                <span class="px-2 py-1 text-xs font-medium rounded-full ${getReasonColor(order.reason)}">
+                  ${order.reason || ""}
+                </span>
+              </td>
+              <td class="px-4 py-3 text-sm">
+                <button onclick="viewOrder(${order.id})" class="text-blue-600 hover:text-blue-800 mr-2">Ver</button>
+                <button onclick="printOrder(${order.id})" class="text-gray-600 hover:text-gray-800">Imprimir</button>
+              </td>`;
+            tbody.appendChild(row);
+          });
 
-          tbody.appendChild(row);
-        });
+          document.getElementById("summaryCount").textContent = data.length;
+        } catch (err) {
+          console.error(err);
+        }
       }
 
       function getReasonColor(reason) {
@@ -244,23 +155,17 @@ import Layout from "../layouts/Layout.astro";
       }
 
       function applyFilters() {
-        // Aquí iría la lógica de filtrado
-        console.log("Aplicando filtros...");
         loadTable();
       }
 
       function viewOrder(id) {
         alert(`Ver detalles de la factura anulada #${id}`);
       }
-
       function printOrder(id) {
         alert(`Imprimir factura anulada #${id}`);
       }
 
-      // Cargar datos al iniciar
-      document.addEventListener("DOMContentLoaded", function () {
-        loadTable();
-      });
+      document.addEventListener("DOMContentLoaded", loadTable);
     </script>
   </body>
 </Layout>

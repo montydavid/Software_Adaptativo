@@ -3,8 +3,11 @@ import Layout from "../layouts/Layout.astro";
 ---
 
 <Layout>
-  <body class="font-poppins min-h-screen bg-cover bg-center" style="background-image: url('./images/main.jpg');">
-    <div class="container mx-auto px-4 py-6  ">
+  <body
+    class="font-poppins min-h-screen bg-cover bg-center"
+    style="background-image: url('./images/main.jpg');"
+  >
+    <div class="container mx-auto px-4 py-6">
       <!-- Header con navbar y perfil -->
       <div class="bg-white rounded-xl shadow-md mb-8 p-4">
         <div class="flex justify-between items-center">
@@ -39,11 +42,13 @@ import Layout from "../layouts/Layout.astro";
                 class="absolute top-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"
               ></span>
             </div>
-            <button
-              class="ml-4 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors duration-300 flex items-center"
-            >
-              <i class="fas fa-sign-out-alt mr-2"></i> Cerrar Sesión
-            </button>
+            <a href="/">
+              <button
+                class="ml-4 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors duration-300 flex items-center"
+              >
+                <i class="fas fa-sign-out-alt mr-2"></i> Cerrar Sesión
+              </button>
+            </a>
           </div>
         </div>
       </div>
@@ -56,183 +61,92 @@ import Layout from "../layouts/Layout.astro";
       </h2>
 
       <div
-        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6"
       >
         <!-- Pedidos -->
-        <div
-          class="bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 p-6 text-white cursor-pointer transform hover:-translate-y-1 transition-transform duration-300"
-        >
-          <div class="flex flex-col items-center justify-center h-32">
-            <div class="bg-blue-600 p-3 rounded-xl mb-3 shadow-md">
-              <i class="fas fa-clipboard-list text-2xl"></i>
+        <a href="/pedido">
+          <div
+            class="bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 p-6 text-white cursor-pointer transform hover:-translate-y-1 transition-transform duration-300"
+          >
+            <div class="flex flex-col items-center justify-center h-32">
+              <div class="bg-blue-600 p-3 rounded-xl mb-3 shadow-md">
+                <i class="fas fa-clipboard-list text-2xl"></i>
+              </div>
+              <h3 class="font-semibold text-center text-lg">Pedidos</h3>
+              <p class="text-xs opacity-80 text-center mt-1">
+                Gestionar órdenes
+              </p>
             </div>
-            <h3 class="font-semibold text-center text-lg">Pedidos</h3>
-            <p class="text-xs opacity-80 text-center mt-1">Gestionar órdenes</p>
           </div>
-        </div>
-
+        </a>
         <!-- Productos -->
-        <div
-          class="bg-gradient-to-br from-green-500 to-green-700 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 p-6 text-white cursor-pointer transform hover:-translate-y-1 transition-transform duration-300"
-        >
-          <div class="flex flex-col items-center justify-center h-32">
-            <div class="bg-green-600 p-3 rounded-xl mb-3 shadow-md">
-              <i class="fas fa-hamburger text-2xl"></i>
+        <a href="/productos">
+          <div
+            class="bg-gradient-to-br from-green-500 to-green-700 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 p-6 text-white cursor-pointer transform hover:-translate-y-1 transition-transform duration-300"
+          >
+            <div class="flex flex-col items-center justify-center h-32">
+              <div class="bg-green-600 p-3 rounded-xl mb-3 shadow-md">
+                <i class="fas fa-hamburger text-2xl"></i>
+              </div>
+              <h3 class="font-semibold text-center text-lg">Productos</h3>
+              <p class="text-xs opacity-80 text-center mt-1">
+                Inventario de alimentos
+              </p>
             </div>
-            <h3 class="font-semibold text-center text-lg">Productos</h3>
-            <p class="text-xs opacity-80 text-center mt-1">
-              Inventario de alimentos
-            </p>
           </div>
-        </div>
-
-        <!-- Mesas -->
-        <div
-          class="bg-gradient-to-br from-yellow-500 to-yellow-700 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 p-6 text-white cursor-pointer transform hover:-translate-y-1 transition-transform duration-300"
-        >
-          <div class="flex flex-col items-center justify-center h-32">
-            <div class="bg-yellow-600 p-3 rounded-xl mb-3 shadow-md">
-              <i class="fas fa-chair text-2xl"></i>
-            </div>
-            <h3 class="font-semibold text-center text-lg">Mesas</h3>
-            <p class="text-xs opacity-80 text-center mt-1">Control de mesas</p>
-          </div>
-        </div>
+        </a>
 
         <!-- Anulaciones -->
-        <div
-          class="bg-gradient-to-br from-red-500 to-red-700 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 p-6 text-white cursor-pointer transform hover:-translate-y-1 transition-transform duration-300"
-        >
-          <div class="flex flex-col items-center justify-center h-32">
-            <div class="bg-red-600 p-3 rounded-xl mb-3 shadow-md">
-              <i class="fas fa-ban text-2xl"></i>
+        <a href="/anulacion">
+          <div
+            class="bg-gradient-to-br from-red-500 to-red-700 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 p-6 text-white cursor-pointer transform hover:-translate-y-1 transition-transform duration-300"
+          >
+            <div class="flex flex-col items-center justify-center h-32">
+              <div class="bg-red-600 p-3 rounded-xl mb-3 shadow-md">
+                <i class="fas fa-ban text-2xl"></i>
+              </div>
+              <h3 class="font-semibold text-center text-lg">Anulaciones</h3>
+              <p class="text-xs opacity-80 text-center mt-1">
+                Cancelar pedidos
+              </p>
             </div>
-            <h3 class="font-semibold text-center text-lg">Anulaciones</h3>
-            <p class="text-xs opacity-80 text-center mt-1">Cancelar pedidos</p>
           </div>
-        </div>
+        </a>
 
         <!-- Reportes -->
-        <div
-          class="bg-gradient-to-br from-purple-500 to-purple-700 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 p-6 text-white cursor-pointer transform hover:-translate-y-1 transition-transform duration-300"
-        >
-          <div class="flex flex-col items-center justify-center h-32">
-            <div class="bg-purple-600 p-3 rounded-xl mb-3 shadow-md">
-              <i class="fas fa-chart-line text-2xl"></i>
+        <a href="/reporte">
+          <div
+            class="bg-gradient-to-br from-purple-500 to-purple-700 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 p-6 text-white cursor-pointer transform hover:-translate-y-1 transition-transform duration-300"
+          >
+            <div class="flex flex-col items-center justify-center h-32">
+              <div class="bg-purple-600 p-3 rounded-xl mb-3 shadow-md">
+                <i class="fas fa-chart-line text-2xl"></i>
+              </div>
+              <h3 class="font-semibold text-center text-lg">Reportes</h3>
+              <p class="text-xs opacity-80 text-center mt-1">
+                Estadísticas del sistema
+              </p>
             </div>
-            <h3 class="font-semibold text-center text-lg">Reportes</h3>
-            <p class="text-xs opacity-80 text-center mt-1">
-              Estadísticas del sistema
-            </p>
           </div>
-        </div>
+        </a>
 
         <!-- Gastos -->
-        <div
-          class="bg-gradient-to-br from-pink-500 to-pink-700 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 p-6 text-white cursor-pointer transform hover:-translate-y-1"
-        >
-          <div class="flex flex-col items-center justify-center h-32">
-            <div class="bg-pink-600 p-3 rounded-xl mb-3 shadow-md">
-              <i class="fas fa-receipt text-2xl"></i>
-            </div>
-            <a href="/gastos"><h3 class="font-semibold text-center text-lg">Gastos</h3></a>
-            <p class="text-xs opacity-80 text-center mt-1">
-              Registro de gastos
-            </p>
-          </div>
-        </div>
+        <a href="/gastos">
+          <div
+            class="bg-gradient-to-br from-pink-500 to-pink-700 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 p-6 text-white cursor-pointer transform hover:-translate-y-1"
+          >
+            <div class="flex flex-col items-center justify-center h-32">
+              <div class="bg-pink-600 p-3 rounded-xl mb-3 shadow-md">
+                <i class="fas fa-receipt text-2xl"></i>
+              </div>
 
-        <!-- Compras -->
-        <div
-          class="bg-gradient-to-br from-indigo-500 to-indigo-700 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 p-6 text-white cursor-pointer transform hover:-translate-y-1 transition-transform duration-300"
-        >
-          <div class="flex flex-col items-center justify-center h-32">
-            <div class="bg-indigo-600 p-3 rounded-xl mb-3 shadow-md">
-              <i class="fas fa-shopping-basket text-2xl"></i>
+              <h3 class="font-semibold text-center text-lg">Gastos</h3>
+              <p class="text-xs opacity-80 text-center mt-1">
+                Registro de gastos
+              </p>
             </div>
-            <h3 class="font-semibold text-center text-lg">Compras</h3>
-            <p class="text-xs opacity-80 text-center mt-1">
-              Adquisición de insumos
-            </p>
           </div>
-        </div>
-
-        <!-- Movimientos -->
-        <div
-          class="bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 p-6 text-white cursor-pointer transform hover:-translate-y-1 transition-transform duration-300"
-        >
-          <div class="flex flex-col items-center justify-center h-32">
-            <div class="bg-blue-500 p-3 rounded-xl mb-3 shadow-md">
-              <i class="fas fa-exchange-alt text-2xl"></i>
-            </div>
-            <h3 class="font-semibold text-center text-lg">Movimientos</h3>
-            <p class="text-xs opacity-80 text-center mt-1">
-              Transacciones y flujos
-            </p>
-          </div>
-        </div>
-
-        <!-- Tipos de productos -->
-        <div
-          class="bg-gradient-to-br from-green-400 to-green-600 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 p-6 text-white cursor-pointer transform hover:-translate-y-1 transition-transform duration-300"
-        >
-          <div class="flex flex-col items-center justify-center h-32">
-            <div class="bg-green-500 p-3 rounded-xl mb-3 shadow-md">
-              <i class="fas fa-tags text-2xl"></i>
-            </div>
-            <h3 class="font-semibold text-center text-lg">
-              Tipos de Productos
-            </h3>
-            <p class="text-xs opacity-80 text-center mt-1">
-              Categorías de alimentos
-            </p>
-          </div>
-        </div>
-
-        <!-- Tipos de gastos -->
-        <div
-          class="bg-gradient-to-br from-red-400 to-red-600 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 p-6 text-white cursor-pointer transform hover:-translate-y-1 transition-transform duration-300"
-        >
-          <div class="flex flex-col items-center justify-center h-32">
-            <div class="bg-red-500 p-3 rounded-xl mb-3 shadow-md">
-              <i class="fas fa-file-invoice-dollar text-2xl"></i>
-            </div>
-            <h3 class="font-semibold text-center text-lg">Tipos de Gastos</h3>
-            <p class="text-xs opacity-80 text-center mt-1">
-              Categorías de egresos
-            </p>
-          </div>
-        </div>
-
-        <!-- Meseros -->
-        <div
-          class="bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 p-6 text-white cursor-pointer transform hover:-translate-y-1 transition-transform duration-300"
-        >
-          <div class="flex flex-col items-center justify-center h-32">
-            <div class="bg-yellow-500 p-3 rounded-xl mb-3 shadow-md">
-              <i class="fas fa-user-tie text-2xl"></i>
-            </div>
-            <h3 class="font-semibold text-center text-lg">Meseros</h3>
-            <p class="text-xs opacity-80 text-center mt-1">
-              Gestión de personal
-            </p>
-          </div>
-        </div>
-
-        <!-- Almacén -->
-        <div
-          class="bg-gradient-to-br from-purple-400 to-purple-600 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 p-6 text-white cursor-pointer transform hover:-translate-y-1 transition-transform duration-300"
-        >
-          <div class="flex flex-col items-center justify-center h-32">
-            <div class="bg-purple-500 p-3 rounded-xl mb-3 shadow-md">
-              <i class="fas fa-warehouse text-2xl"></i>
-            </div>
-            <h3 class="font-semibold text-center text-lg">Almacén</h3>
-            <p class="text-xs opacity-80 text-center mt-1">
-              Control de inventario
-            </p>
-          </div>
-        </div>
+        </a>
       </div>
     </div>
   </body>
